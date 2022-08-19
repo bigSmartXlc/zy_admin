@@ -4,8 +4,9 @@ import { PageQueryParam, PageResult } from '../base';
  * 权限查询参数类型声明
  */
 export interface PermQueryParam extends PageQueryParam {
-  search: any;
+  search: string;
   search_status: any;
+  search_cate_id
 }
 
 /**
@@ -27,8 +28,13 @@ export type PermPageResult = PageResult<PermItem[]>;
  */
 export interface PermFormData {
   id: number | undefined;
-  name: string;
-  urlPerm: string;
-  btnPerm: string;
-  menuId: string;
+  description: string;
+  check_cate: string;
+  auth_permission_cate_id: string|undefined;
+  auth_permission_cate_name: string;
+  status: number;
+  routeCategory,
+  routeAction,
+  permissionCategory,
+  routeUri,
 }

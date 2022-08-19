@@ -65,6 +65,7 @@ export const filterAsyncRoutes = (
         item.path = '/'
         item.component = Layout;
       } else {
+        // item.path = '/'+tmp.route
         const component = modules[`../../views/${tmp.route}/index.vue`] as any;
         if (component) {
           item.component = component;
@@ -84,6 +85,7 @@ export const filterAsyncRoutes = (
 const usePermissionStore = defineStore({
   id: 'permission',
   state: (): PermissionState => ({
+    isRoute:false,
     routes: [],
     addRoutes: [],
   }),
@@ -91,6 +93,7 @@ const usePermissionStore = defineStore({
     setRoutes(routes: RouteRecordRaw[]) {
       this.addRoutes = routes;
       this.routes = constantRoutes.concat(routes);
+      this.isRoute = true
     },
     generateRoutes(roles: string[]) {
       return new Promise((resolve, reject) => {

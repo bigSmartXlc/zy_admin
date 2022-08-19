@@ -16,7 +16,7 @@ import {
   updatePerm,
   deletePerms,
 } from '@/api/system/perm';
-import { Search, Plus, Edit, Refresh, Delete } from '@element-plus/icons-vue';
+import { Search, Plus, Edit, Refresh, Delete,View } from '@element-plus/icons-vue';
 
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 import { Dialog, Option } from '@/types/common';
@@ -40,7 +40,7 @@ const state = reactive({
   multiple: true,
   queryParams: {
     pageNum: 1,
-    pageSize: 15,
+    pageSize: 10,
   } as PermQueryParam,
   permList: [],
   total: 0,
@@ -49,12 +49,19 @@ const state = reactive({
   } as Dialog,
   formData: {} as PermFormData,
   rules: {
-    name: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
-    perm: [{ required: true, message: '请输入权限标识', trigger: 'blur' }],
-    method: [{ required: true, message: '请选择请求方式', trigger: 'blur' }],
+    description: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
+    permissionCategory: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
+    routeCategory: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
+    routeUri: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
+    routeAction: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
+    status: [{ required: true, message: '请输入权限标识', trigger: 'blur' }],
   },
   microServiceOptions: [] as Option[],
-  requestMethodOptions: [] as Option[],
+  requestMethodOptions: [
+    {label:'启用',value:1},
+    {label:'禁用',value:0}
+  ],
+  cateSelect:[],
   urlPerm: {
     requestMethod: '',
     serviceName: '',
@@ -70,9 +77,8 @@ const {
   dialog,
   formData,
   rules,
-  microServiceOptions,
   requestMethodOptions,
-  urlPerm,
+  cateSelect,
   queryParams,
 } = toRefs(state);
 
@@ -80,107 +86,80 @@ const {
 function handleRef(){
   state.loading = true;
     permissionsRefresh().then(({ data }) => {
-      state.permList = data.list;
-      state.total = data.total;
-      state.loading = false;
+      handleQuery()
     });
 }
+// 查询
 function handleQuery() {
-  console.log('查询');
     state.loading = true;
     listPermPages(state.queryParams).then(({ data }) => {
-      console.log(data);
       state.permList = data.list.data;
       state.total = data.list.total;
       state.loading = false;
+      state.cateSelect = data.cateSelect
     });
 }
-
+//重置
 function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
 }
 
-function handleSelectionChange(selection: any) {
-  state.ids = selection.map((item: any) => item.id);
-  state.single = selection.length !== 1;
-  state.multiple = !selection.length;
-}
-
-/**
- * 加载字典数据
- */
-function loadDictOptions() {
-  proxy.$getDictItemsByTypeCode('micro_service').then((response: any) => {
-    state.microServiceOptions = response.data;
-  });
-
-  proxy.$getDictItemsByTypeCode('request_method').then((response: any) => {
-    state.requestMethodOptions = response.data;
-  });
-}
-
-function handleAdd() {
-  loadDictOptions();
-  state.dialog = {
-    title: '添加权限',
-    visible: true,
+function getView(row:any){
+    const {id} = row
+  getPermFormDetail(id).then((res)=>{
+// auth_permission_cate_id: 0
+// id: 60
+// permissionName: null
+// routeAction: "GET"
+// routeCategory: "admin.cps.storage.tag.create"
+// routeUri: "v3/storage/tag/createTag"
+// status: 1
+const {auth_permission_cate_id,id,routeAction,routeCategory,routeUri,status} = res.data
+  state.formData = {
+    id: id,
+    routeCategory,
+    routeUri,
+    routeAction,
+    description: '',
+    check_cate: 'create',
+    permissionCategory:"",
+    auth_permission_cate_id: '',
+    auth_permission_cate_name: '',
+    status: status
   };
-}
+     state.dialog = {
+    title:'查看权限',
+    visible:true
+  }
+  })
 
+}
 function handleUpdate(row: any) {
-  loadDictOptions();
   state.dialog = {
     title: '修改权限',
     visible: true,
   };
-  const id = row.id || state.ids;
-  getPermFormDetail(id).then((response) => {
-    const { data } = response;
-    state.formData = data;
-    if (data && data.urlPerm) {
-      // GET:/youlai-admin/api/v1/users
-      const urlPermArr = data.urlPerm.split(':');
-      state.urlPerm.requestMethod = urlPermArr[0];
-      state.urlPerm.serviceName = urlPermArr[1].substring(
-        1,
-        urlPermArr[1].substring(1).indexOf('/') + 1
-      );
-      state.urlPerm.requestPath = urlPermArr[1].substring(
-        urlPermArr[1].substring(1).indexOf('/') + 1
-      );
-    }
-  });
+  const {id,permissionName,permissionCategory,routeCategory,routeUri,routeAction,status} = row
+  state.formData = {
+    id: id,
+    routeCategory,
+    permissionCategory,
+    routeUri,
+    routeAction,
+    description: permissionName,
+    check_cate: 'create',
+    auth_permission_cate_id: '',
+    auth_permission_cate_name: '',
+    status: status
+  };
 }
 
 function submitForm() {
   dataFormRef.value.validate((isValid: any) => {
     if (isValid) {
-      // 接口权限和按钮权限必填其一
-      console.log(state.urlPerm.requestPath, state.formData.btnPerm);
-      if (!(state.urlPerm.requestPath || state.formData.btnPerm)) {
-        ElMessage.warning('请至少填写一种权限');
-        return false;
-      }
-      // 如果填写了URL权限，完整性校验
-      if (!state.urlPerm.requestPath) {
-        if (!state.urlPerm.requestMethod) {
-          ElMessage.warning('URL权限的请求方式不能为空');
-          return false;
-        }
-        if (!state.urlPerm.serviceName) {
-          ElMessage.warning('URL权限的所属服务不能为空');
-          return false;
-        }
-        state.formData.urlPerm =
-          state.urlPerm.requestMethod +
-          ':/' +
-          state.urlPerm.serviceName +
-          state.urlPerm.requestPath;
-      }
-
       if (state.formData.id) {
-        updatePerm(state.formData.id, state.formData).then(() => {
+        updatePerm(state.formData.id, state.formData).then((data) => {
           ElMessage.success('修改成功');
           cancel();
           handleQuery();
@@ -215,14 +194,13 @@ function cancel() {
 }
 
 function handleDelete(row: any) {
-  const ids = [row.id || state.ids].join(',');
   ElMessageBox.confirm('确认删除已选中的数据项?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
   })
     .then(() => {
-      deletePerms(ids).then(() => {
+      deletePerms(row.id).then(() => {
         ElMessage.success('删除成功');
         handleQuery();
       });
@@ -241,12 +219,12 @@ onMounted(() => {
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item>
         <el-button
-          type="success"
-          :icon="Plus"
+          type="info"
+          :icon="Refresh"
           @click="handleRef"
           >刷新</el-button
         >
-        <el-button
+        <!-- <el-button
           type="success"
           :icon="Plus"
           @click="handleAdd"
@@ -258,9 +236,37 @@ onMounted(() => {
           :disabled="multiple"
           @click="handleDelete"
           >删除</el-button
-        >
+        > -->
       </el-form-item>
-      <el-form-item prop="name">
+      <el-form-item prop="search_cate_id">
+        <el-select
+          v-model="queryParams.search_cate_id"
+          placeholder="分类"
+          clearable
+        >
+          <el-option
+            v-for="item in cateSelect"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="search_status">
+        <el-select
+          v-model="queryParams.search_status"
+          placeholder="状态"
+          clearable
+        >
+          <el-option
+          v-for="item in requestMethodOptions"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="search">
         <el-input
           v-model="queryParams.search"
           placeholder="权限名称"
@@ -280,18 +286,27 @@ onMounted(() => {
     <el-table
       :data="permList"
       v-loading="loading"
-      @selection-change="handleSelectionChange"
       border
     >
-      <el-table-column type="selection" width="40" align="center" />
       <el-table-column label="权限名称" prop="permissionName" width="150" />
       <el-table-column label="权限分类" prop="permissionCategory" width="150" />
       <el-table-column label="路由" prop="routeCategory"/>
       <el-table-column label="rul" prop="routeUri" />
       <el-table-column label="请求方式" prop="routeAction" width="150" />
-      <el-table-column label="状态" prop="status" width="150" />
+      <el-table-column label="状态" prop="status" width="150">
+         <template #default="scope">
+       <span>{{scope.row.status==1?'启用':'停用'}}</span>
+      </template>  
+      </el-table-column>
       <el-table-column label="操作" align="center">
         <template #default="scope">
+           <el-button
+            type="info"
+            :icon="View"
+            circle
+            plain
+            @click="getView(scope.row)"
+          />
           <el-button
             type="primary"
             :icon="Edit"
@@ -327,50 +342,61 @@ onMounted(() => {
         :rules="rules"
         label-width="120px"
       >
-        <el-form-item label="权限名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入权限名称" />
+        <el-form-item label="权限名称" prop="description">
+          <el-input v-model="formData.description" placeholder="请输入权限名称" :disabled="dialog.title=='查看权限'"/>
         </el-form-item>
-
-        <el-form-item label="URL权限标识" prop="urlPerm">
-          <el-input placeholder="/api/v1/users" v-model="urlPerm.requestPath">
-            <template #prepend>
-              <el-select
-                v-model="urlPerm.serviceName"
-                style="width: 130px"
-                placeholder="所属服务"
-                clearable
-              >
-                <el-option
-                  v-for="item in microServiceOptions"
-                  :key="item.value"
-                  :value="item.value"
-                  :label="item.label"
-                />
-              </el-select>
-
-              <el-select
-                v-model="urlPerm.requestMethod"
-                style="width: 120px; margin-left: 20px"
-                placeholder="请求方式"
-                clearable
-              >
-                <el-option
-                  v-for="item in requestMethodOptions"
-                  :key="item.value"
-                  :value="item.value"
-                  :label="item.label"
-                />
-              </el-select>
-            </template>
-          </el-input>
-          <el-link v-show="urlPerm.requestMethod">
-            {{ urlPerm.requestMethod }}:/{{ urlPerm.serviceName
-            }}{{ urlPerm.requestPath }}
-          </el-link>
+        <el-form-item label="路由" prop="routeCategory">
+          <el-input v-model="formData.routeCategory" :disabled="dialog.title!='添加权限'" />
         </el-form-item>
-
-        <el-form-item label="按钮权限标识" prop="btnPerm">
-          <el-input v-model="formData.btnPerm" placeholder="sys:user:add" />
+        <el-form-item label="url" prop="routeUri">
+          <el-input v-model="formData.routeUri"  :disabled="dialog.title!='添加权限'" />
+        </el-form-item>
+        <el-form-item label="请求方式" prop="routeAction">
+          <el-input v-model="formData.routeAction" placeholder="请输入权限名称"  :disabled="dialog.title!='添加权限'"/>
+        </el-form-item>
+        <el-form-item label="权限类型" prop="check_cate">
+           <el-radio-group v-if="dialog.title!='查看权限'" v-model="formData.check_cate">
+            <el-radio
+                  label="select">
+                  <el-select
+                    v-model="formData.auth_permission_cate_id"
+                    placeholder="选择类型"
+                    clearable
+                  >
+                    <el-option
+                      v-for="item in cateSelect"
+                      :key="item.value"
+                      :value="item.value"
+                      :label="item.label"
+                    />
+                  </el-select>
+            </el-radio>
+            <el-radio
+                  label="create">
+                  <el-input v-model="formData.auth_permission_cate_name" placeholder="请输入权限类型名称" />
+            </el-radio>
+          </el-radio-group>
+          <el-select
+            v-else
+            v-model="formData.auth_permission_cate_id"
+            placeholder="分类"
+            disabled
+          >
+            <el-option
+              v-for="item in cateSelect"
+              :key="item.value"
+              :value="item.value"
+              :label="item.label"
+            />
+            </el-select>
+          <!-- <el-input v-else v-model="formData.permissionCategory" disabled /> -->
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+           <el-radio-group v-model="formData.status" :disabled="dialog.title=='查看权限'">
+            <el-radio  v-for="item in requestMethodOptions"
+                  :key="item.label"
+                  :label="item.value">{{item.label}}</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
       <template #footer>

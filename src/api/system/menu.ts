@@ -38,7 +38,7 @@ export function listMenus(
  */
 export function listMenuOptions(): AxiosPromise<Option[]> {
   return request({
-    url: '/youlai-admin/api/v1/menus/options',
+    url: `/auth/navigator`,
     method: 'get',
   });
 }

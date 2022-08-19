@@ -54,9 +54,9 @@ export function listPerms(
  *
  * @param id
  */
-export function getPermFormDetail(id: number): AxiosPromise<PermFormData> {
+export function getPermFormDetail(permission: number): AxiosPromise<PermFormData> {
   return request({
-    url: '/youlai-admin/api/v1/permissions/' + id,
+    url: `/auth/permission/${permission}`,
     method: 'get',
   });
 }
@@ -75,15 +75,15 @@ export function addPerm(data: PermFormData) {
 }
 
 /**
- * 更新权限
+ * 修改权限
  *
  * @param id
  * @param data
  */
-export function updatePerm(id: number, data: PermFormData) {
+export function updatePerm(permission: number, data: PermFormData) {
   return request({
-    url: '/youlai-admin/api/v1/permissions/' + id,
-    method: 'put',
+    url: `/auth/permission/${permission}`,
+    method: 'post',
     data: data,
   });
 }
@@ -93,9 +93,9 @@ export function updatePerm(id: number, data: PermFormData) {
  *
  * @param ids
  */
-export function deletePerms(ids: string) {
+export function deletePerms(permission: string) {
   return request({
-    url: '/youlai-admin/api/v1/permissions/' + ids,
+    url: `/auth/permission/${permission}`,
     method: 'delete',
   });
 }
