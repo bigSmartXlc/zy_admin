@@ -36,7 +36,7 @@ export function listMenus(
 /**
  * 获取菜单下拉树形列表
  */
-export function listMenuOptions(): AxiosPromise<Option[]> {
+export function listMenuOptions(): AxiosPromise<any> {
   return request({
     url: `/auth/navigator`,
     method: 'get',
@@ -59,7 +59,7 @@ export function getResource(): AxiosPromise<any> {
  */
 export function getMenuDetail(id: number): AxiosPromise<MenuFormData> {
   return request({
-    url: '/youlai-admin/api/v1/menus/' + id,
+    url: `/auth/navigator/${id}`,
     method: 'get',
   });
 }
@@ -69,9 +69,9 @@ export function getMenuDetail(id: number): AxiosPromise<MenuFormData> {
  *
  * @param data
  */
-export function addMenu(data: MenuFormData) {
+export function addMenu(data: any) {
   return request({
-    url: '/youlai-admin/api/v1/menus',
+    url: '/auth/navigator/create',
     method: 'post',
     data: data,
   });
@@ -83,22 +83,49 @@ export function addMenu(data: MenuFormData) {
  * @param id
  * @param data
  */
-export function updateMenu(id: string, data: MenuFormData) {
+export function updateMenu(id:number,data:any) {
   return request({
-    url: '/youlai-admin/api/v1/menus/' + id,
-    method: 'put',
+    url: `/auth/navigator/${id}`,
+    method: 'post',
     data: data,
   });
 }
 
 /**
- * 批量删除菜单
+ * 删除菜单
  *
  * @param ids 菜单ID，多个以英文逗号(,)分割
  */
-export function deleteMenus(ids: string) {
+export function deleteMenus(id:number) {
   return request({
-    url: '/youlai-admin/api/v1/menus/' + ids,
-    method: 'delete',
+    url: `/auth/navigator/${id}/delete`,
+    method: 'post',
   });
+}
+
+/*
+  停用启用菜单
+*/
+export function banMenu(id:number){
+  return request({
+    url: `/auth/navigator/${id}/ban`,
+    method: 'post'
+  })
+}
+export function unbanMenu(id:number){
+  return request({
+    url: `/auth/navigator/${id}/unban`,
+    method: 'post'
+  })
+}
+
+/*
+  菜单拖拽排序
+*/
+export function dragMenu(data:any){
+  return request({
+    url:`/auth/navigator/sort`,
+    data:data,
+    method:'post'
+  })
 }

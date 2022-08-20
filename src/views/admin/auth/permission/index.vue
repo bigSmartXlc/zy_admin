@@ -15,6 +15,7 @@ import {
   addPerm,
   updatePerm,
   deletePerms,
+  swich_permission
 } from '@/api/system/perm';
 import { Search, Plus, Edit, Refresh, Delete,View } from '@element-plus/icons-vue';
 
@@ -23,9 +24,8 @@ import { Dialog, Option } from '@/types/common';
 
 import {
   PermFormData,
-  PermQueryParam,
+  PermItem,
 } from '@/types/api/system/perm';
-
 const { proxy }: any = getCurrentInstance();
 
 const queryFormRef = ref(ElForm);
@@ -39,10 +39,13 @@ const state = reactive({
   // 非多个禁用
   multiple: true,
   queryParams: {
+    search_cate_id:'',
+    search_status:'',
+    search:'',
     pageNum: 1,
     pageSize: 10,
-  } as PermQueryParam,
-  permList: [],
+  },
+  permList: [] as PermItem[],
   total: 0,
   dialog: {
     visible: false,
@@ -61,7 +64,7 @@ const state = reactive({
     {label:'启用',value:1},
     {label:'禁用',value:0}
   ],
-  cateSelect:[],
+  cateSelect:{},
   urlPerm: {
     requestMethod: '',
     serviceName: '',
@@ -81,7 +84,17 @@ const {
   cateSelect,
   queryParams,
 } = toRefs(state);
-
+watch(
+  state.queryParams,
+  (val) => {
+   console.log(val);
+   handleQuery()
+  },
+  {
+    //初始化立即执行
+    deep: true
+  }
+);
 // 刷新权限列表
 function handleRef(){
   state.loading = true;
@@ -92,8 +105,10 @@ function handleRef(){
 // 查询
 function handleQuery() {
     state.loading = true;
-    listPermPages(state.queryParams).then(({ data }) => {
-      state.permList = data.list.data;
+    listPermPages(state.queryParams).then((res) => {
+      var data = res.data
+      var listjson = JSON.parse(JSON.stringify(data.list.data) )
+      state.permList = listjson;
       state.total = data.list.total;
       state.loading = false;
       state.cateSelect = data.cateSelect
@@ -104,17 +119,10 @@ function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
 }
-
+//查看
 function getView(row:any){
     const {id} = row
   getPermFormDetail(id).then((res)=>{
-// auth_permission_cate_id: 0
-// id: 60
-// permissionName: null
-// routeAction: "GET"
-// routeCategory: "admin.cps.storage.tag.create"
-// routeUri: "v3/storage/tag/createTag"
-// status: 1
 const {auth_permission_cate_id,id,routeAction,routeCategory,routeUri,status} = res.data
   state.formData = {
     id: id,
@@ -124,7 +132,7 @@ const {auth_permission_cate_id,id,routeAction,routeCategory,routeUri,status} = r
     description: '',
     check_cate: 'create',
     permissionCategory:"",
-    auth_permission_cate_id: '',
+    auth_permission_cate_id,
     auth_permission_cate_name: '',
     status: status
   };
@@ -135,6 +143,7 @@ const {auth_permission_cate_id,id,routeAction,routeCategory,routeUri,status} = r
   })
 
 }
+//编辑
 function handleUpdate(row: any) {
   state.dialog = {
     title: '修改权限',
@@ -148,7 +157,7 @@ function handleUpdate(row: any) {
     routeUri,
     routeAction,
     description: permissionName,
-    check_cate: 'create',
+    check_cate: cateSelect.value!={}?'select':'create',
     auth_permission_cate_id: '',
     auth_permission_cate_name: '',
     status: status
@@ -207,7 +216,11 @@ function handleDelete(row: any) {
     })
     .catch(() => ElMessage.info('已取消删除'));
 }
-
+function handleStatusChange(row:any){
+  swich_permission(row.id).then(()=>{
+    handleQuery();
+  })
+}
 onMounted(() => {
   handleQuery();
 });
@@ -245,10 +258,10 @@ onMounted(() => {
           clearable
         >
           <el-option
-            v-for="item in cateSelect"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
+            v-for="(value,  key) in cateSelect"
+              :key="value"
+              :value="key"
+              :label="value"
           />
         </el-select>
       </el-form-item>
@@ -291,14 +304,20 @@ onMounted(() => {
       <el-table-column label="权限名称" prop="permissionName" width="150" />
       <el-table-column label="权限分类" prop="permissionCategory" width="150" />
       <el-table-column label="路由" prop="routeCategory"/>
-      <el-table-column label="rul" prop="routeUri" />
+      <el-table-column label="URL" prop="routeUri" />
       <el-table-column label="请求方式" prop="routeAction" width="150" />
       <el-table-column label="状态" prop="status" width="150">
-         <template #default="scope">
-       <span>{{scope.row.status==1?'启用':'停用'}}</span>
-      </template>  
+          <template #default="scope">
+            <!-- <span>{{scope.row.status==1?'启用':'停用'}}</span> -->
+            <el-switch
+              v-model="scope.row.status"
+                  :inactive-value="0"
+                  :active-value="1"
+                  @change="handleStatusChange(scope.row)"
+            />
+          </template>  
       </el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="left">
         <template #default="scope">
            <el-button
             type="info"
@@ -335,7 +354,7 @@ onMounted(() => {
     />
 
     <!-- 表单弹窗 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" width="700px">
+    <el-dialog :title="dialog.title" v-model="dialog.visible" custom-class="width_class">
       <el-form
         ref="dataFormRef"
         :model="formData"
@@ -348,7 +367,7 @@ onMounted(() => {
         <el-form-item label="路由" prop="routeCategory">
           <el-input v-model="formData.routeCategory" :disabled="dialog.title!='添加权限'" />
         </el-form-item>
-        <el-form-item label="url" prop="routeUri">
+        <el-form-item label="URL" prop="routeUri">
           <el-input v-model="formData.routeUri"  :disabled="dialog.title!='添加权限'" />
         </el-form-item>
         <el-form-item label="请求方式" prop="routeAction">
@@ -364,10 +383,10 @@ onMounted(() => {
                     clearable
                   >
                     <el-option
-                      v-for="item in cateSelect"
-                      :key="item.value"
-                      :value="item.value"
-                      :label="item.label"
+                      v-for="(value,  key) in cateSelect"
+                      :key="value"
+                      :value="key"
+                      :label="value"
                     />
                   </el-select>
             </el-radio>
@@ -383,10 +402,10 @@ onMounted(() => {
             disabled
           >
             <el-option
-              v-for="item in cateSelect"
-              :key="item.value"
-              :value="item.value"
-              :label="item.label"
+              v-for="(value,key) in cateSelect"
+              :key="value"
+              :value="key"
+              :label="value"
             />
             </el-select>
           <!-- <el-input v-else v-model="formData.permissionCategory" disabled /> -->
@@ -400,7 +419,7 @@ onMounted(() => {
         </el-form-item>
       </el-form>
       <template #footer>
-        <div class="dialog-footer">
+        <div class="dialog-footer" v-show="dialog.title!='查看权限'">
           <el-button type="primary" @click="submitForm">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
         </div>
@@ -411,6 +430,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .component-container {
-  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 </style>

@@ -30,7 +30,7 @@ export const filterAsyncRoutes = (
   routes.forEach((route) => {
     const tmp = { ...route } as any;
     const icon = {
-      167: 'HomeIcon',
+      167: 'homepage',
       170: 'UsersIcon',
       172: 'ClipboardIcon',
       174: 'CopyIcon',
@@ -52,7 +52,7 @@ export const filterAsyncRoutes = (
       // 'AwardIcon', // 个人中心
       // 'SettingsIcon'// 系统设置
     }
-    const item = {
+    const item:any = {
         id:tmp.id,
         order:tmp.order,
         path:tmp.route,
@@ -101,7 +101,6 @@ const usePermissionStore = defineStore({
           .then((response) => {
             const asyncRoutes = response.data.nav;
             const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles);
-            console.log(accessedRoutes);
             this.setRoutes(accessedRoutes);
             resolve(accessedRoutes);
           })

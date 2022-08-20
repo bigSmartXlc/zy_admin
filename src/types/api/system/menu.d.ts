@@ -33,7 +33,7 @@ export interface MenuFormData {
   /**
    * 父菜单ID
    */
-  parentId: string;
+   pid: string;
   /**
    * 菜单名称
    */
@@ -55,6 +55,7 @@ export interface MenuFormData {
    * 路由路径
    */
   path: string;
+  route:string;
   /**
    * 跳转路由路径
    */

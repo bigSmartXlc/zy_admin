@@ -1,7 +1,6 @@
 import {
   PermFormData,
   PermItem,
-  PermPageResult,
   PermQueryParam,
 } from '@/types/api/system/perm';
 import request from '@/utils/request';
@@ -15,8 +14,8 @@ import api from '@/api/apilist'
  * @param queryParams
  */
 export function listPermPages(
-  queryParams: PermQueryParam
-): AxiosPromise<PermPageResult> {
+  queryParams: any
+) {
   return request({
     url: api.permission,
     method: 'get',
@@ -89,13 +88,24 @@ export function updatePerm(permission: number, data: PermFormData) {
 }
 
 /**
- * 批量删除权限，多个以英文逗号(,)分割
+ * 删除权限，多个以英文逗号(,)分割
  *
  * @param ids
  */
 export function deletePerms(permission: string) {
   return request({
-    url: `/auth/permission/${permission}`,
-    method: 'delete',
+    url: `/auth/permission/${permission}/delete`,
+    method: 'post',
+  });
+}
+
+
+/*
+  启用停用权限
+*/
+export function swich_permission(permission: string) {
+  return request({
+    url: `/auth/permission/${permission}/changestatus`,
+    method: 'post',
   });
 }

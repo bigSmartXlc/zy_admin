@@ -10,7 +10,6 @@ NProgress.configure({ showSpinner: false }); // 进度环显示/隐藏
 const whiteList = ['/login'];
 
 router.beforeEach(async (to, from, next) => {
-  console.log(to,from);
   NProgress.start();
   const { user, permission } = useStore();
   const hasToken = user.token;
@@ -18,7 +17,7 @@ router.beforeEach(async (to, from, next) => {
      const roles = ['ROOT'];
     // 登录成功，跳转到首页
     if (to.path === '/login') {
-      next({ path: '/' });
+      next({ path: to.path });
       NProgress.done();
     } else {
           const accessRoutes: any = await permission.generateRoutes(roles);
@@ -26,7 +25,7 @@ router.beforeEach(async (to, from, next) => {
             router.addRoute(route);
           });
         if (to.matched.length === 0) {
-          from.name ? next({ path: to.path }) : next('/401');
+          next({ path: to.path })
         } else {
           next();
         }

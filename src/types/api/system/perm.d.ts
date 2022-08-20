@@ -3,7 +3,7 @@ import { PageQueryParam, PageResult } from '../base';
 /**
  * 权限查询参数类型声明
  */
-export interface PermQueryParam extends PageQueryParam {
+export interface PermQueryParam {
   search: string;
   search_status: any;
   search_cate_id
@@ -21,7 +21,6 @@ export interface PermItem {
 /**
  * 权限分页项类型声明
  */
-export type PermPageResult = PageResult<PermItem[]>;
 
 /**
  * 权限表单类型声明

@@ -1,11 +1,11 @@
 <template>
   <section class="app-main">
     <router-view v-slot="{ Component, route }">
-      <transition name="router-fade" mode="out-in">
+      <!-- <transition name="router-fade" mode="out-in"> -->
         <keep-alive :include="cachedViews">
           <component :is="Component" :key="route.fullPath" />
         </keep-alive>
-      </transition>
+      <!-- </transition> -->
     </router-view>
   </section>
 </template>
@@ -23,6 +23,7 @@ const cachedViews = computed(() => tagsView.cachedViews);
 .app-main {
   /* 50= navbar  50  */
   min-height: calc(100vh - 50px);
+  padding: 10px;
   width: 100%;
   position: relative;
   overflow: hidden;

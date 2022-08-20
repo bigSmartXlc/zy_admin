@@ -37,15 +37,16 @@
           generateTitle(item.meta.title)
         }}</span>
       </template>
-
-      <sidebar-item
-        v-for="child in item.children"
-        :key="child.id"
-        :item="child"
-        :is-nest="true"
-        :base-path="resolvePath(child.path)"
-        class="nest-menu"
-      />
+      <span v-if="item.children.length>0">
+        <sidebar-item
+          v-for="child in item.children"
+          :key="child.id"
+          :item="child"
+          :is-nest="true"
+          :base-path="resolvePath(child.path)"
+          class="nest-menu"
+        />
+      </span>
     </el-sub-menu>
   </div>
 </template>
