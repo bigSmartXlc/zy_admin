@@ -53,12 +53,12 @@ export const filterAsyncRoutes = (
       // 'SettingsIcon'// 系统设置
     }
     const item:any = {
-        id:tmp.id,
-        order:tmp.order,
+        id:tmp.id||999,
+        order:tmp.order||999,
         path:tmp.route,
         component: Layout,
         name: tmp.name,
-        meta: { title: tmp.name, icon: tmp.route == ''?'homepage':'', affix: false },
+        meta: { title: tmp.name, icon: tmp.route == ''?'homepage':'', affix: false ,hidden:tmp.display==false},
     }
     if (hasPermission(roles, tmp)) {
       if (tmp.route == ''||tmp.route == 'admin/admin') {

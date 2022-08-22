@@ -140,10 +140,10 @@ const passwordRef = ref(ElInput);
 
 const state = reactive({
   codetime:0,
-  redirect: '',
+  redirect: '/',
   loginForm: {
-    name: 'zy_cpszy',
-    auth_password: '00000000',
+    name: 'admin',
+    auth_password: '123456',
     code: '',
     uuid: '',
   } as LoginFormData,

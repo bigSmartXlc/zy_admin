@@ -15,7 +15,7 @@
         <sidebar-item
           v-for="route in routes"
           :item="route"
-          :key="route.id"
+          :key="route.name"
           :base-path="route.path"
           :is-collapse="isCollapse"
         />

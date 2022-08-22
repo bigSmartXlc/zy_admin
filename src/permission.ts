@@ -17,13 +17,15 @@ router.beforeEach(async (to, from, next) => {
      const roles = ['ROOT'];
     // 登录成功，跳转到首页
     if (to.path === '/login') {
-      next({ path: to.path });
+      next({ path: '/' });
       NProgress.done();
     } else {
-          const accessRoutes: any = await permission.generateRoutes(roles);
-          accessRoutes.forEach((route: any) => {
-            router.addRoute(route);
-          });
+      if(!permission.isRoute){
+        const accessRoutes: any = await permission.generateRoutes(roles);
+        accessRoutes.forEach((route: any) => {
+          router.addRoute(route);
+        });
+      }
         if (to.matched.length === 0) {
           next({ path: to.path })
         } else {

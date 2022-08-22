@@ -41,7 +41,9 @@
 .el-table__body tr.current-row td {
   background-color: #e1f3d8b5 !important;
 }
-
+.el-input--default{
+  width: 214px;
+}
 // card 的header统一高度
 .el-card__header {
   height: 60px !important;

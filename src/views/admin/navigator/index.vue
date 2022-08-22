@@ -173,17 +173,16 @@ const defaultProps = {
 }
 const queryFormRef = ref(ElForm);
 onMounted(()=>{
- refersh()
+ refersh(true)
 })
 //刷新菜单
-const refersh=()=>{
+const refersh=(first=false)=>{
   listMenuOptions().then(res=>{
-    const { permission } = useStore();
-     const accessRoutes: any = permission.generateRoutes(['ROOT']).then(res=>{
-            // accessRoutes.forEach((route: any) => {
-            //   router.addRoute(route);
-            // })
-     })
+    if(!first){
+      const { permission } = useStore();
+      permission.generateRoutes(['ROOT']).then(res=>{
+      })
+    }
     menu_route.value = []
     tree_data.value = res.data.list.data
     pid_menu.value = res.data.routeNavigatorSelect
