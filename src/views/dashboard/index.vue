@@ -71,14 +71,14 @@ import Team from './components/Team/index.vue';
     <!-- 项目 + 团队成员介绍 -->
     <el-row :gutter="40">
       <!-- 项目介绍 -->
-      <el-col :md="12" :lg="12" class="card-panel__col">
+      <!-- <el-col :md="12" :lg="12" class="card-panel__col">
         <Project />
-      </el-col>
+      </el-col> -->
 
       <!-- 团队介绍 -->
-      <el-col :md="12" :lg="12" class="card-panel__col">
+      <!-- <el-col :md="12" :lg="12" class="card-panel__col">
         <Team />
-      </el-col>
+      </el-col> -->
     </el-row>
 
     <!-- Echarts 图表 -->

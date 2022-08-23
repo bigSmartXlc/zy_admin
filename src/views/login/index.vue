@@ -1,110 +1,116 @@
 <template>
   <div class="login-container">
-    <el-form
-      ref="loginFormRef"
-      :model="loginForm"
-      :rules="loginRules"
-      class="login-form"
-      auto-complete="on"
-      label-position="left"
-    >
-      <div class="title-container">
-        <h3 class="title">{{ $t('login.title') }}</h3>
-        <lang-select class="set-language" />
-      </div>
-
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.name"
-          :placeholder="$t('login.username')"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
-
-      <el-tooltip
-        :disabled="capslockTooltipDisabled"
-        content="Caps lock is On"
-        placement="right"
+    <el-row :gutter="10">
+      <el-col :sm="12" class="hidden-xs-only" style="border-right: solid 2px #fff;">
+        <img src="@/assets/images/41.png" alt="" srcset="" style="width: 70%;">
+      </el-col>
+      <el-col :xs="24" :sm="12" >
+        <el-form
+        ref="loginFormRef"
+        :model="loginForm"
+        :rules="loginRules"
+        class="login-form"
+        auto-complete="on"
+        label-position="left"
       >
-        <el-form-item prop="password">
+        <div class="title-container">
+          <h3 class="title">{{ $t('login.title') }}</h3>
+          <lang-select class="set-language" />
+        </div>
+  
+        <el-form-item prop="username">
           <span class="svg-container">
-            <svg-icon icon-class="password" />
+            <svg-icon icon-class="user" />
           </span>
           <el-input
-            ref="passwordRef"
-            :key="passwordType"
-            v-model="loginForm.auth_password"
-            :type="passwordType"
-            placeholder="Password"
-            name="password"
-            tabindex="2"
+            ref="username"
+            v-model="loginForm.name"
+            :placeholder="$t('login.username')"
+            name="username"
+            type="text"
+            tabindex="1"
             auto-complete="on"
-            @keyup="checkCapslock"
-            @blur="capslockTooltipDisabled = true"
-            @keyup.enter="handleLogin"
           />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon
-              :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
-            />
-          </span>
         </el-form-item>
-      </el-tooltip>
-
-      <!-- 验证码 -->
-      <el-form-item prop="code">
-        <span class="svg-container">
-          <svg-icon icon-class="valid_code" />
+  
+        <el-tooltip
+          :disabled="capslockTooltipDisabled"
+          content="Caps lock is On"
+          placement="right"
+        >
+          <el-form-item prop="password">
+            <span class="svg-container">
+              <svg-icon icon-class="password" />
+            </span>
+            <el-input
+              ref="passwordRef"
+              :key="passwordType"
+              v-model="loginForm.auth_password"
+              :type="passwordType"
+              placeholder="Password"
+              name="password"
+              tabindex="2"
+              auto-complete="on"
+              @keyup="checkCapslock"
+              @blur="capslockTooltipDisabled = true"
+              @keyup.enter="handleLogin"
+            />
+            <span class="show-pwd" @click="showPwd">
+              <svg-icon
+                :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+              />
+            </span>
+          </el-form-item>
+        </el-tooltip>
+  
+        <!-- 验证码 -->
+        <el-form-item prop="code">
+          <span class="svg-container">
+            <svg-icon icon-class="valid_code" />
+          </span>
+          <el-input
+            v-model="loginForm.code"
+            auto-complete="off"
+            :placeholder="$t('login.code')"
+            style="width: 65%"
+            @keyup.enter="handleLogin"
+          >
+          </el-input>
+          <span class="getCode">
+          <el-button 
+          type="primary"
+          :loading="getCode_loading"
+           @click="handleCaptchaGenerate"
+           :disabled='codetime>0'
+          >{{codetime<=0?'获取验证码':codetime+'s'}}</el-button>
         </span>
-        <el-input
-          v-model="loginForm.code"
-          auto-complete="off"
-          :placeholder="$t('login.code')"
-          style="width: 65%"
-          @keyup.enter="handleLogin"
-        >
-        </el-input>
-        <span class="getCode">
-        <el-button 
-        type="primary"
-        :loading="getCode_loading"
-         @click="handleCaptchaGenerate"
-         :disabled='codetime>0'
-        >{{codetime<=0?'获取验证码':codetime+'s'}}</el-button>
-      </span>
-
-        <!-- <div class="captcha">
-          <img
-            :src="captchaBase64"
-            height="38px"
-          />
+  
+          <!-- <div class="captcha">
+            <img
+              :src="captchaBase64"
+              height="38px"
+            />
+          </div> -->
+        </el-form-item>
+  
+        <el-button
+          size="default"
+          :loading="loading"
+          type="primary"
+          style="width: 100%; margin-bottom: 30px"
+          @click.prevent="handleLogin"
+          >{{ $t('login.login') }}
+        </el-button>
+  
+        <!-- <div class="tips">
+          <span style="margin-right: 20px"
+            >{{ $t('login.username') }}: admin</span
+          >
+          <span> {{ $t('login.password') }}: 123456</span>
         </div> -->
-      </el-form-item>
-
-      <el-button
-        size="default"
-        :loading="loading"
-        type="primary"
-        style="width: 100%; margin-bottom: 30px"
-        @click.prevent="handleLogin"
-        >{{ $t('login.login') }}
-      </el-button>
-
-      <!-- <div class="tips">
-        <span style="margin-right: 20px"
-          >{{ $t('login.username') }}: admin</span
-        >
-        <span> {{ $t('login.password') }}: 123456</span>
-      </div> -->
-    </el-form>
-
+        </el-form>
+      </el-col>
+    </el-row>
     <div v-if="showCopyright == true" class="copyright">
       <p>{{ $t('login.copyright') }}</p>
       <p>{{ $t('login.icp') }}</p>
@@ -113,6 +119,7 @@
 </template>
 
 <script setup lang="ts">
+import 'element-plus/theme-chalk/display.css'
 import { onMounted, reactive, ref, toRefs, watch, nextTick } from 'vue';
 import { Search } from '@element-plus/icons-vue'
 // 组件依赖
@@ -208,7 +215,7 @@ function handleLogin() {
       user
         .login(state.loginForm)
         .then(() => {
-          router.push({ path: state.redirect || '/', query: state.otherQuery });
+          router.push({ path:'/', query: state.otherQuery });
           state.loading = false;
         })
         .catch(() => {
@@ -327,6 +334,7 @@ $cursor: #fff;
     height: 36px;
     width: 85%;
     .el-input__wrapper {
+      width: 80%;
       padding: 0;
       background: transparent;
       box-shadow: none;
@@ -338,7 +346,6 @@ $cursor: #fff;
         color: $light_gray;
         height: 36px;
         caret-color: $cursor;
-
         &:-webkit-autofill {
           box-shadow: 0 0 0px 1000px $bg inset !important;
           -webkit-text-fill-color: $cursor !important;
@@ -378,18 +385,19 @@ $cursor: #fff;
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
-
 .login-container {
   min-height: 100%;
   width: 100%;
   background-color: $bg;
   overflow: hidden;
-
+  text-align: center;
+  padding-top: 20vh;
+  box-sizing: border-box;
   .login-form {
+    display: inline-block;
+    width: 90%;
+    max-width: 520px;
     position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
   }

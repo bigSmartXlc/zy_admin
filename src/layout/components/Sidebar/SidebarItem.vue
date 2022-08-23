@@ -52,16 +52,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref ,onMounted} from 'vue';
+import { ref } from 'vue';
 import path from 'path-browserify';
 import { isExternal } from '@/utils/validate';
 import AppLink from './Link.vue';
 
 import { generateTitle } from '@/utils/i18n';
 import SvgIcon from '@/components/SvgIcon/index.vue';
-onMounted(()=>{
-  console.log(props.item);
-})
 const props = defineProps({
   item: {
     type: Object,

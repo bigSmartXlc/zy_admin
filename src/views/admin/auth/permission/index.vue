@@ -42,8 +42,8 @@ const state = reactive({
     search_cate_id:'',
     search_status:'',
     search:'',
-    pageNum: 1,
-    pageSize: 10,
+    page: 1,
+    pageSize: 15,
   },
   permList: [] as PermItem[],
   total: 0,
@@ -53,11 +53,6 @@ const state = reactive({
   formData: {} as PermFormData,
   rules: {
     description: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
-    permissionCategory: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
-    routeCategory: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
-    routeUri: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
-    routeAction: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
-    status: [{ required: true, message: '请输入权限标识', trigger: 'blur' }],
   },
   microServiceOptions: [] as Option[],
   requestMethodOptions: [
@@ -237,19 +232,6 @@ onMounted(() => {
           @click="handleRef"
           >刷新</el-button
         >
-        <!-- <el-button
-          type="success"
-          :icon="Plus"
-          @click="handleAdd"
-          >新增</el-button
-        >
-        <el-button
-          type="danger"
-          :icon="Delete"
-          :disabled="multiple"
-          @click="handleDelete"
-          >删除</el-button
-        > -->
       </el-form-item>
       <el-form-item prop="search_cate_id">
         <el-select
@@ -348,8 +330,9 @@ onMounted(() => {
     <pagination
       v-if="total > 0"
       :total="total"
-      v-model:page="queryParams.pageNum"
+      v-model:page="queryParams.page"
       v-model:limit="queryParams.pageSize"
+      :page-sizes="[15,30,50,100]"
       @pagination="handleQuery"
     />
 
@@ -371,7 +354,7 @@ onMounted(() => {
           <el-input v-model="formData.routeUri"  :disabled="dialog.title!='添加权限'" />
         </el-form-item>
         <el-form-item label="请求方式" prop="routeAction">
-          <el-input v-model="formData.routeAction" placeholder="请输入权限名称"  :disabled="dialog.title!='添加权限'"/>
+          <el-input v-model="formData.routeAction" placeholder="请输入请求方式"  :disabled="dialog.title!='添加权限'"/>
         </el-form-item>
         <el-form-item label="权限类型" prop="check_cate">
            <el-radio-group v-if="dialog.title!='查看权限'" v-model="formData.check_cate">
