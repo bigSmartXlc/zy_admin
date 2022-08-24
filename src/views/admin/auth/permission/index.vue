@@ -30,6 +30,7 @@ const { proxy }: any = getCurrentInstance();
 
 const queryFormRef = ref(ElForm);
 const dataFormRef = ref(ElForm);
+const layout = 'total, prev, pager, next'
 const state = reactive({
   loading: true,
   // 选中ID数组
@@ -332,6 +333,7 @@ onMounted(() => {
       :total="total"
       v-model:page="queryParams.page"
       v-model:limit="queryParams.pageSize"
+      :layout="layout"
       :page-sizes="[15,30,50,100]"
       @pagination="handleQuery"
     />
