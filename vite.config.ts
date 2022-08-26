@@ -23,15 +23,15 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       host: '0.0.0.0',
       port: Number(env.VITE_APP_PORT),
       open: true, // 运行自动打开浏览器
-      proxy: {
-        [env.VITE_APP_BASE_API]: {
-          target: 'http://xlwys.zyh5games.com/v3',
-          // target: 'https://api.youlai.tech',
-          changeOrigin: true,
-          rewrite: path =>
-            path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
-        }
-      }
+      // proxy: {
+      //   [env.VITE_APP_BASE_API]: {
+      //     target: 'http://xlwys.zyh5games.com/v3',
+      //     // target: 'https://api.youlai.tech',
+      //     changeOrigin: true,
+      //     rewrite: path =>
+      //       path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
+      //   }
+      // }
     },
     resolve: {
       // Vite路径别名配置

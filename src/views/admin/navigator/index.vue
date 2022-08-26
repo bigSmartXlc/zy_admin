@@ -318,13 +318,21 @@ const handleUnban = (id:number)=>{
 }
 // 删除
 const handleDelete = (id:number) => {
-  deleteMenus(id).then(res=>{
-     ElMessage({
+   ElMessageBox.confirm('确认删除当前菜单?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(() => {
+       deleteMenus(id).then(res=>{
+      ElMessage({
         type: 'warning',
         message: '已删除',
       })
       refersh()
   })
+    })
+    .catch(() => ElMessage.info('已取消删除'));
 }
 </script>
 <style lang="scss" scoped>

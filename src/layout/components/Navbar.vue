@@ -17,10 +17,17 @@
         <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
-        <lang-select class="right-menu-item hover-effect" />
+        <!-- <lang-select class="right-menu-item hover-effect" /> -->
+        <div class="logout_btn">
+          <el-button
+              type="danger"
+              @click="logout"
+          >{{ $t('navbar.logout') }}</el-button>
+        </div>
       </template>
 
       <el-dropdown
+      v-show="false"
         class="avatar-container right-menu-item hover-effect"
         trigger="click"
       >
@@ -138,7 +145,10 @@ ul {
     &:focus {
       outline: none;
     }
-
+    .logout_btn{
+      display: inline-block;
+      vertical-align: text-bottom;
+    }
     .right-menu-item {
       display: inline-block;
       padding: 0 8px;

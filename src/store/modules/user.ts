@@ -74,17 +74,17 @@ const useUserStore = defineStore({
      */
     logout() {
       return new Promise((resolve, reject) => {
-        logout()
-          .then(() => {
+        // logout()
+        //   .then(() => {
             localStorage.remove('token');
             localStorage.remove('USERID');
             this.RESET_STATE();
             resetRouter();
             resolve(null);
-          })
-          .catch((error) => {
-            reject(error);
-          });
+          // })
+          // .catch((error) => {
+          //   reject(error);
+          // });
       });
     },
 

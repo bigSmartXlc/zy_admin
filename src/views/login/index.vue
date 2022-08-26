@@ -1,10 +1,10 @@
 <template>
   <div class="login-container">
-    <el-row :gutter="10">
-      <el-col :sm="12" class="hidden-xs-only" style="border-right: solid 2px #fff;">
+    <el-row :gutter="10" class="login_class">
+      <el-col :sm="12" class="hidden-xs-only login_col login_logo">
         <img src="@/assets/images/41.png" alt="" srcset="" style="width: 70%;">
       </el-col>
-      <el-col :xs="24" :sm="12" >
+      <el-col :xs="24" :sm="12" class="login_col">
         <el-form
         ref="loginFormRef"
         :model="loginForm"
@@ -299,15 +299,22 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
 $bg: #283443;
-$light_gray: #fff;
+$light_gray: #000;
 $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  .login_class{
+    height: 100vh;
+    .login_col{
+      padding-top: 20vh;
+      box-sizing: border-box;
+    }
+    .login_logo{
+      background-image:linear-gradient(45deg, #2196f3, #00bcd4) ;
+    }
+  }
   .title-container {
     position: relative;
 
@@ -382,16 +389,16 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
-$dark_gray: #889aa4;
-$light_gray: #eee;
+$bg: #fff;
+$dark_gray: #000;
+$light_gray: #000;
 .login-container {
   min-height: 100%;
   width: 100%;
   background-color: $bg;
   overflow: hidden;
   text-align: center;
-  padding-top: 20vh;
+  // padding-top: 20vh;
   box-sizing: border-box;
   .login-form {
     display: inline-block;

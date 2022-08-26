@@ -70,7 +70,6 @@ const state = reactive({
 
 const {
   loading,
-  multiple,
   permList,
   total,
   dialog,
@@ -128,7 +127,7 @@ const {auth_permission_cate_id,id,routeAction,routeCategory,routeUri,status} = r
     description: '',
     check_cate: 'create',
     permissionCategory:"",
-    auth_permission_cate_id,
+    auth_permission_cate_id:auth_permission_cate_id?.toString(),
     auth_permission_cate_name: '',
     status: status
   };
@@ -141,23 +140,26 @@ const {auth_permission_cate_id,id,routeAction,routeCategory,routeUri,status} = r
 }
 //编辑
 function handleUpdate(row: any) {
-  state.dialog = {
-    title: '修改权限',
-    visible: true,
-  };
-  const {id,permissionName,permissionCategory,routeCategory,routeUri,routeAction,status} = row
-  state.formData = {
-    id: id,
-    routeCategory,
-    permissionCategory,
-    routeUri,
-    routeAction,
-    description: permissionName,
-    check_cate: cateSelect.value!={}?'select':'create',
-    auth_permission_cate_id: '',
-    auth_permission_cate_name: '',
-    status: status
-  };
+      const {id} = row
+  getPermFormDetail(id).then((res)=>{
+    const {auth_permission_cate_id,id,routeAction,routeCategory,routeUri,status} = res.data
+    state.formData = {
+      id: id,
+      routeCategory,
+      routeUri,
+      routeAction,
+      description: '',
+      check_cate: auth_permission_cate_id?'select':'create',
+      permissionCategory:"",
+      auth_permission_cate_id:auth_permission_cate_id?.toString(),
+      auth_permission_cate_name: '',
+      status: status
+    };
+      state.dialog = {
+        title: '修改权限',
+        visible: true,
+      };
+   })
 }
 
 function submitForm() {
