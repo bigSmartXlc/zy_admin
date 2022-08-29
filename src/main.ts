@@ -13,7 +13,7 @@ import 'default-passive-events';
 
 // 引入svg注册脚本
 import 'virtual:svg-icons-register';
-
+import DataVVue3 from '@kjgl77/datav-vue3'
 // 国际化
 import i18n from '@/lang/index';
 
@@ -39,6 +39,7 @@ app.config.globalProperties.$getDictItemsByTypeCode = getDictItemsByTypeCode;
 app
   .component('Pagination', Pagination)
   .use(createPinia())
+  .use(DataVVue3)
   .use(router)
   .use(ElementPlus)
   .use(i18n)

@@ -44,6 +44,12 @@ export const constantRoutes: Array<RouteRecordRaw> = [
         component: () => import('@/views/error-page/401.vue'),
         meta: { hidden: true }
       },
+      {
+        path: 'admin/auth/company/zzjg',
+        name:'ZZJQ',
+        component: () => import('@/views/admin/auth/company/zzjg.vue'),
+        meta: { hidden: true }
+      },
     ]
   }
 

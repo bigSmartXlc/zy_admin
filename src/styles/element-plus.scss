@@ -46,7 +46,10 @@
   background-color: #e1f3d8b5 !important;
 }
 .el-input--default{
-  width: 214px;
+  min-width: 214px;
+}
+.el-select--default{
+  width: 100%;
 }
 // card 的header统一高度
 .el-card__header {

@@ -1,6 +1,8 @@
 <!--  线 + 柱混合图 -->
 <template>
+<dv-border-box1>
   <div :id="id" :class="className" :style="{ height, width }" />
+</dv-border-box1>
 </template>
 
 <script setup lang="ts">
