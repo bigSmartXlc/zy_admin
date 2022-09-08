@@ -49,10 +49,22 @@ export const constantRoutes: Array<RouteRecordRaw> = [
         name:'ZZJQ',
         component: () => import('@/views/admin/auth/company/zzjg.vue'),
         meta: { hidden: true }
+      }
+    ]
+  },
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'admin/auth/userManagment',
+        name:'Users',
+        component: () => import('@/views/admin/auth/userManagment/index.vue'),
+        meta: { title:'账号管理'}
       },
     ]
   }
-
   // 外部链接
   /*{
         path: '/external-link',

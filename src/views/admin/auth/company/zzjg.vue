@@ -19,13 +19,16 @@
                       default-expand-all
                       :props="defaultProps"
                       :default-expanded-keys="defaultNodekey"
+                      :expand-on-click-node="false"
+                      :check-on-click-node="true"
+                      :check-strictly="true"
                       node-key="id"
                       accordion
                       @node-click="handleNodeClick"
                       class="menu_tree"
                   >
                       <template #default="{ node, data }">
-                      <span class="custom-tree-node">
+                      <span class="custom-tree-node" :class="data.id==selectNodeData.id?'checkedNode':''">
                           <span>{{ node.label }}</span>
                           <span class="btnlist">
                             <el-tooltip
@@ -105,38 +108,38 @@
                             </el-tooltip>
                           </span>
                           </span>
-                      
                       </template>
                   </el-tree>
               </div>
           </dv-border-box-9>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8"
-      >
+      <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8">
           <dv-border-box-11 title="员工列表" :title-width="250" class="border_style11">
               <div>
                    <el-button
                   type="success"
                   :icon="Plus"
                    size="small"
-                  @click="handleAddUser(scope.row.id)"
+                  @click="handleAddUser(selectNodeData.id)"
               >添加</el-button>
                <el-button
                   type="danger"
                    size="small"
                   :icon="Delete"
-                  @click="handleDelete(scope.row)"
+                  :disabled="can_delate_user"
+                  @click="handleDeleteUser()"
               >删除</el-button>
                 <el-button
                   type="primary"
                   :icon="Edit"
                    size="small"
-                  @click="editRole(scope.row)"
+                   :disabled="can_delate_user"
+                  @click="editUserArray()"
               >调组</el-button>
                <el-table
                   ref="multipleTableRef"
                   :data="tableData"
-                  @selection-change="handleSelectionChange"
+                  @selection-change="handleSelectionChange1"
               >
                   <el-table-column type="selection"/>
                   <el-table-column label="Date">
@@ -149,7 +152,7 @@
                               type="info"
                               :icon="Plus"
                               size="small"
-                              @click="handelZzjg(scope.row)"
+                              @click="handelUserRole(scope.row)"
                           >角色</el-button>
                       </template>
                   </el-table-column>
@@ -165,13 +168,14 @@
                   type="success"
                   :icon="Plus"
                    size="small"
-                  @click="bingSuperior(scope.row.id)"
+                  @click="handleAddRole(selectNodeData.id)"
               >添加</el-button>
                <el-button
                   type="danger"
                    size="small"
                   :icon="Delete"
-                  @click="handleDelete(scope.row)"
+                  :disabled="can_delate_role"
+                  @click="handleRoleDelete()"
               >删除</el-button>
                <el-table
                   ref="multipleTableRef"
@@ -228,8 +232,11 @@ const dialog=ref({
   visible:false,
   title:''
 })
-const multipleSelection = ref([])
-const tableData:Array<[]> = [
+const can_delate_role = ref(true)
+const can_delate_user = ref(true)
+const multipleSelection_role = ref([])
+const multipleSelection_user = ref([])
+const tableData:Array<any> = [
   {
     date: '2016-05-03',
     name: 'Tom',
@@ -266,8 +273,21 @@ const tableData:Array<[]> = [
     address: 'No. 189, Grove St, Los Angeles',
   },
 ]
+const handleSelectionChange1 = (val:any) => {
+  multipleSelection_user.value = val
+  if(multipleSelection_user.value.length>0){
+    can_delate_user.value=false
+  }else{
+    can_delate_user.value=true
+  }
+}
 const handleSelectionChange = (val:any) => {
-  multipleSelection.value = val
+  multipleSelection_role.value = val
+  if(multipleSelection_role.value.length>0){
+    can_delate_role.value=false
+  }else{
+    can_delate_role.value=true
+  }
 }
 const queryParams=reactive({
     name:'',
@@ -279,7 +299,7 @@ const dragParams:any=reactive({
     current_id:'',
     footer_id:""
   })  
-const selectNodeData = ref({})
+const selectNodeData:any = ref({})
 const menu_route:any = ref([])  
 const pid_menu:any = ref({})  
 const select_node:any = ref({})  
@@ -288,7 +308,7 @@ const edit_status: any = ref(false)
 const defaultNodekey: any = ref([])
 const defaultProps = {
   children: 'subRoute',
-  label: 'name',
+  label: 'name'
 }
 const queryFormRef = ref(ElForm);
 const route = useRoute();
@@ -379,7 +399,7 @@ const getView =(id:number)=>{
 //修改菜单
 const handleUpdate =(data:object)=>{
   updateMenu(select_node.value.id,queryParams).then(res=>{
-    resetQuery()
+    // resetQuery()
     refersh()
     defaultNodekey.value = [select_node.value.id]
     edit_status.value = false
@@ -403,29 +423,42 @@ const handleDelete = (id:number) => {
     })
     .catch(() => ElMessage.info('已取消删除'));
 }
+//批量删除角色
+function handleRoleDelete(){}
+//设置员工角色
+function handelUserRole(row:object){
+  console.log(row);
+  
+}
+//批量删除员工
+function handleDeleteUser(){}
+//调组
+function editUserArray(){
+
+}
 </script>
 <style lang="scss" scoped>
     .tree_style{
         max-height: 800px;
         height: 75vh;
-        .custom-tree-node:hover{
-            background-color: bisque;
-            .btnlist{
-            display: inline-block;
-            }
-            } 
-            .custom-tree-node {
-            width: 100%;
-            flex: 1;
-            display: block;
-            font-size: 14px;
-            font-weight: 700;
-            padding-right: 8px;
-            .btnlist{
-            display: none;
-            float: right;
-            }
-            }
+        .checkedNode{
+          background-color: bisque;
+          .btnlist{
+            display: inline-block !important;
+          }
+        }
+        .custom-tree-node {
+          width: 100%;
+          flex: 1;
+          display: block;
+          font-size: 14px;
+          font-weight: 700;
+          padding-right: 8px;
+          .btnlist{
+          display: none;
+          float: right;
+          }
+        }
     }
     .border_style{
         padding: 20px;

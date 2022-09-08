@@ -312,7 +312,7 @@ $cursor: #fff;
       box-sizing: border-box;
     }
     .login_logo{
-      background-image:linear-gradient(45deg, #2196f3, #00bcd4) ;
+      background-image:linear-gradient(45deg, #fa5000, #00bcd4) ;
     }
   }
   .title-container {
