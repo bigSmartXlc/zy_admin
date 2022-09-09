@@ -88,7 +88,7 @@
                                   size="small"
                                   circle
                                   plain
-                                  @click.stop="handleAddUser(data.id)"
+                                  @click.stop="handleAddUser({organ_id:data.id})"
                               />
                             </el-tooltip>
                             <el-tooltip
@@ -103,7 +103,7 @@
                                   size="small"
                                   circle
                                   plain
-                                  @click.stop="handleAddRole(data.id)"
+                                  @click.stop="handleAddRole({organ_id:data.id})"
                               />
                             </el-tooltip>
                           </span>
@@ -113,14 +113,14 @@
               </div>
           </dv-border-box-9>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8">
+      <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8" v-if="selectNodeData.id">
           <dv-border-box-11 title="员工列表" :title-width="250" class="border_style11">
               <div>
                    <el-button
                   type="success"
                   :icon="Plus"
                    size="small"
-                  @click="handleAddUser(selectNodeData.id)"
+                  @click="handleAddUser({organ_id_not_equaled:selectNodeData.id})"
               >添加</el-button>
                <el-button
                   type="danger"
@@ -160,15 +160,14 @@
               </div>
           </dv-border-box-11>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8"
-      >
+      <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8" v-if="selectNodeData.id">
           <dv-border-box-11 title="角色列表" :title-width="250" class="border_style11">
               <div>
                     <el-button
                   type="success"
                   :icon="Plus"
                    size="small"
-                  @click="handleAddRole(selectNodeData.id)"
+                  @click="handleAddRole({organ_id_not_equaled:selectNodeData.id})"
               >添加</el-button>
                <el-button
                   type="danger"
@@ -211,15 +210,16 @@ import {
   ref,
 } from 'vue';
 import {
-  getMenuDetail,
-  listMenuOptions,
-  addMenu,
-  deleteMenus,
-  updateMenu,
-  dragMenu,
-  banMenu,
-  unbanMenu
-} from '@/api/system/menu';
+  getCompanySys,
+  createOrgan,
+  deleteOrgan,
+  getOrganUser,
+  getOrganRole,
+  addOrganRole,
+  deleteOrganRole,
+  addOrganUser,
+  deleteOrganUser
+} from '@/api/system/company';
 import { Plus, Edit, Delete,Avatar,User } from '@element-plus/icons-vue';
 import RoleEdit from './Edit.vue'
 import { ElForm,ElMessage, ElMessageBox } from 'element-plus'
@@ -294,42 +294,47 @@ const queryParams=reactive({
     pid:'',
     route:''
   })
-const dragParams:any=reactive({
-     header_id:'',
-    current_id:'',
-    footer_id:""
-  })  
 const selectNodeData:any = ref({})
-const menu_route:any = ref([])  
-const pid_menu:any = ref({})  
 const select_node:any = ref({})  
 const tree_data: any = ref([])
 const edit_status: any = ref(false)
 const defaultNodekey: any = ref([])
 const defaultProps = {
-  children: 'subRoute',
-  label: 'name'
+  children: 'children',
+  label: 'text'
 }
-const queryFormRef = ref(ElForm);
 const route = useRoute();
 onMounted(()=>{
- refersh(true)
+ refersh()
 })
 //点击节点
 const handleNodeClick = (data: any) => {
   selectNodeData.value = data
+  getRole(data.id)
+  getUser(data.id)
+}
+//查询组织角色
+function getRole(organ_id:any){
+  getOrganRole({organ_id}).then(res=>{
+    console.log(res);
+  })
+}
+function getUser(organ_id:any){
+  getOrganUser({organ_id}).then(res=>{
+    console.log(res);
+  })
 }
 //打开/关闭添加角色弹框
-function handleAddRole(id:any){
+function handleAddRole(data:any){
   dialog.value={
-    editId:id,
+    editId:data,
     visible:true,
     title:'添加角色'
   }
 }
-function handleAddUser(id:any){
+function handleAddUser(data:any){
   dialog.value={
-    editId:id,
+    editId:data,
     visible:true,
     title:'添加员工'
   }
@@ -345,34 +350,21 @@ function closeEdit(){
 function submit(data:object){
   console.log(data);
 }
-//刷新菜单
-const refersh=(first=false)=>{
-  listMenuOptions().then(res=>{
-    if(!first){
-      const { permission } = useStore();
-      permission.generateRoutes(['ROOT']).then(res=>{
-      })
-    }
-    menu_route.value = []
-    tree_data.value = res.data.list.data
-    pid_menu.value = res.data.routeNavigatorSelect
-    var routeData = res.data.permissionSelect
-    for (const key in routeData) {
-      menu_route.value.push({
-        id:key,...routeData[key]
-      })
-    }
+//获取组织
+const refersh=()=>{
+  getCompanySys(route.query.id).then(res=>{
+    tree_data.value = res.data.organs
   })
 }
-//添加菜单
+//添加组织
 const handleAdd =(pid:number)=>{
-   ElMessageBox.prompt('请输入菜单名', '添加菜单', {
+   ElMessageBox.prompt('请输入组织名', '添加组织', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
   })
     .then(({ value }) => {
-      addMenu({
-        pid,name:value
+      createOrgan({
+        pid,name:value,company_id:route.query.id
       }).then(()=>{
         refersh()
         defaultNodekey.value = [pid]
@@ -385,7 +377,7 @@ const handleAdd =(pid:number)=>{
       })
     })
 }
-//获取菜单详情
+//获取组织详情
 const getView =(id:number)=>{
     getMenuDetail(id).then((res)=>{
       select_node.value = res.data
@@ -396,7 +388,7 @@ const getView =(id:number)=>{
       edit_status.value = true
     })
 }
-//修改菜单
+//组织重命名
 const handleUpdate =(data:object)=>{
   updateMenu(select_node.value.id,queryParams).then(res=>{
     // resetQuery()
@@ -407,13 +399,13 @@ const handleUpdate =(data:object)=>{
 }
 // 删除
 const handleDelete = (id:number) => {
-   ElMessageBox.confirm('确认删除当前菜单?', '警告', {
+   ElMessageBox.confirm('确认删除当前组织?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
   })
     .then(() => {
-       deleteMenus(id).then(res=>{
+       deleteOrgan(id,{company_id:route.query.id}).then(res=>{
       ElMessage({
         type: 'warning',
         message: '已删除',

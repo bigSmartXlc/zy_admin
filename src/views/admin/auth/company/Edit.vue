@@ -12,19 +12,10 @@
           @selection-change="handleSelectionChange"
       >
           <el-table-column type="selection"/>
-          <el-table-column label="Date">
-          <template #default="scope">{{ scope.row.date }}</template>
-          </el-table-column>
-          <el-table-column property="name" label="Name"/>
-            <el-table-column label="操作" align="left">
-              <template #default="scope">
-                  <el-button
-                      type="info"
-                      size="small"
-                      @click="handelZzjg(scope.row)"
-                  >角色</el-button>
-              </template>
-          </el-table-column>
+          <el-table-column v-if="title!='添加角色'" property="name" label="账号"/>
+          <el-table-column v-if="title!='添加角色'" property="name" label="用户姓名"/>
+          <el-table-column v-if="title=='添加角色'" property="name" label="角色名" />
+          <el-table-column v-if="title=='添加角色'" property="name" label="描述"/>
       </el-table>
       <template #footer>
         <span class="dialog-footer">
@@ -41,8 +32,7 @@
   <script lang="ts" setup>
 import {
   onMounted,
-  watch,
-  reactive,
+  toRefs,
   computed,
   ref,
 } from 'vue';
@@ -52,46 +42,50 @@ import {
     title?: string
     }>()
     const multipleSelection = ref([])
-const tableData:any = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-08',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-06',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-07',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-]
-const handleSelectionChange = (val:any) => {
-  multipleSelection.value = val
-}
+    onMounted(()=>{
+      
+    })
+    const {title} = toRefs(props);
+  const tableData:any = [
+    {
+      date: '2016-05-03',
+      name: 'Tom',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
+    {
+      date: '2016-05-02',
+      name: 'Tom',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
+    {
+      date: '2016-05-04',
+      name: 'Tom',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
+    {
+      date: '2016-05-01',
+      name: 'Tom',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
+    {
+      date: '2016-05-08',
+      name: 'Tom',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
+    {
+      date: '2016-05-06',
+      name: 'Tom',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
+    {
+      date: '2016-05-07',
+      name: 'Tom',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
+  ]
+  const handleSelectionChange = (val:any) => {
+    multipleSelection.value = val
+  }
   const dialogVisible = computed(() => props.visible)
   const Tips = computed(() => props.title)
   const emit = defineEmits(['closeEdit', 'submit'])
