@@ -58,7 +58,7 @@
                                   size="small"
                                   circle
                                   plain
-                                  @click.stop="getView(data.id)"
+                                  @click.stop="handleRename(data.id)"
                               />
                             </el-tooltip>
                             <el-tooltip
@@ -88,7 +88,7 @@
                                   size="small"
                                   circle
                                   plain
-                                  @click.stop="handleAddUser({organ_id:data.id})"
+                                  @click.stop="handleAddUser({organ_id:data.id},data)"
                               />
                             </el-tooltip>
                             <el-tooltip
@@ -103,7 +103,7 @@
                                   size="small"
                                   circle
                                   plain
-                                  @click.stop="handleAddRole({organ_id:data.id})"
+                                  @click.stop="handleAddRole({organ_id_not_equaled:data.id})"
                               />
                             </el-tooltip>
                           </span>
@@ -120,7 +120,7 @@
                   type="success"
                   :icon="Plus"
                    size="small"
-                  @click="handleAddUser({organ_id_not_equaled:selectNodeData.id})"
+                  @click="handleAddUser({organ_id_not_equaled:selectNodeData.id},selectNodeData)"
               >添加</el-button>
                <el-button
                   type="danger"
@@ -142,10 +142,8 @@
                   @selection-change="handleSelectionChange1"
               >
                   <el-table-column type="selection"/>
-                  <el-table-column label="Date">
-                  <template #default="scope">{{ scope.row.date }}</template>
-                  </el-table-column>
-                  <el-table-column property="name" label="Name"/>
+                  <el-table-column property="name" label="账号"/>
+                  <el-table-column property="name" label="用户名"/>
                     <el-table-column label="操作" align="left">
                       <template #default="scope">
                           <el-button
@@ -157,13 +155,21 @@
                       </template>
                   </el-table-column>
               </el-table>
+               <!-- 分页工具条 -->
+              <pagination
+                :total="total"
+                v-model:page="queryParams.page"
+                v-model:limit="queryParams.pageSize"
+                :layout="layout"
+                @pagination="getUser(selectNodeData.id)"
+              />
               </div>
           </dv-border-box-11>
       </el-col>
       <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8" v-if="selectNodeData.id">
           <dv-border-box-11 title="角色列表" :title-width="250" class="border_style11">
               <div>
-                    <el-button
+                <el-button
                   type="success"
                   :icon="Plus"
                    size="small"
@@ -178,16 +184,22 @@
               >删除</el-button>
                <el-table
                   ref="multipleTableRef"
-                  :data="tableData"
+                  :data="role_tabledata"
                   @selection-change="handleSelectionChange"
               >
                   <el-table-column type="selection" />
-                  <el-table-column label="Date" >
-                  <template #default="scope">{{ scope.row.date }}</template>
-                  </el-table-column>
-                  <el-table-column property="name" label="Name"/>
+                  <el-table-column property="name" label="角色名称" />
+                  <el-table-column property="description" label="描述"/>
               </el-table>
-              </div>
+               <!-- 分页工具条 -->
+              <pagination
+                :total="total1"
+                v-model:page="queryParams1.page"
+                v-model:limit="queryParams1.pageSize"
+                :layout="layout"
+                @pagination="getRole(selectNodeData.id)"
+              />
+              </div> 
           </dv-border-box-11>
       </el-col>
       </el-row>
@@ -210,6 +222,7 @@ import {
   ref,
 } from 'vue';
 import {
+  reName,
   getCompanySys,
   createOrgan,
   deleteOrgan,
@@ -232,47 +245,43 @@ const dialog=ref({
   visible:false,
   title:''
 })
+const queryParams=ref({
+  page:1,
+  pageSize:10
+})
+const queryParams1=ref({
+  page:1,
+  pageSize:10
+})
+const total = ref(0)
+const total1 = ref(0)
+const layout = 'total, prev, pager, next'
 const can_delate_role = ref(true)
 const can_delate_user = ref(true)
 const multipleSelection_role = ref([])
 const multipleSelection_user = ref([])
-const tableData:Array<any> = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-08',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-06',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-07',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-]
+const tableData =ref([])
+const role_tabledata = ref([])
+//重命名
+function handleRename(id:any){
+  ElMessageBox.prompt('请输入组织名', '添加组织', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+  })
+    .then(({ value }) => {
+      reName(id,value).then(()=>{
+        refersh()
+        defaultNodekey.value = [id]
+      })
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: 'Input canceled',
+      })
+    })
+}
+//勾选用户
 const handleSelectionChange1 = (val:any) => {
   multipleSelection_user.value = val
   if(multipleSelection_user.value.length>0){
@@ -281,6 +290,8 @@ const handleSelectionChange1 = (val:any) => {
     can_delate_user.value=true
   }
 }
+//勾选角色
+
 const handleSelectionChange = (val:any) => {
   multipleSelection_role.value = val
   if(multipleSelection_role.value.length>0){
@@ -289,15 +300,30 @@ const handleSelectionChange = (val:any) => {
     can_delate_role.value=true
   }
 }
-const queryParams=reactive({
-    name:'',
-    pid:'',
-    route:''
+//批量删除角色
+function handleRoleDelete(){
+  ElMessageBox.confirm('确认删除选中的角色吗?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   })
+    .then(() => {
+      const role_id = [] as any
+      multipleSelection_role.value.forEach((item:any)=>{
+        role_id.push(item.id)
+      })
+      deleteOrganRole(selectNodeData.value.id,{role_id:role_id}).then(res=>{
+        ElMessage({
+        type: 'warning',
+        message: '已删除',
+      })
+        getRole(selectNodeData.value.id)
+      })
+    })
+    .catch(() => ElMessage.info('已取消删除'));
+}
 const selectNodeData:any = ref({})
-const select_node:any = ref({})  
 const tree_data: any = ref([])
-const edit_status: any = ref(false)
 const defaultNodekey: any = ref([])
 const defaultProps = {
   children: 'children',
@@ -316,7 +342,7 @@ const handleNodeClick = (data: any) => {
 //查询组织角色
 function getRole(organ_id:any){
   getOrganRole({organ_id}).then(res=>{
-    console.log(res);
+    role_tabledata.value=res.data
   })
 }
 function getUser(organ_id:any){
@@ -332,7 +358,8 @@ function handleAddRole(data:any){
     title:'添加角色'
   }
 }
-function handleAddUser(data:any){
+function handleAddUser(data:any,select_data:any){
+  selectNodeData.value = select_data
   dialog.value={
     editId:data,
     visible:true,
@@ -347,8 +374,13 @@ function closeEdit(){
   }
 }
 //弹框提交
-function submit(data:object){
-  console.log(data);
+function submit(data:any){
+  if(data.type==1){
+    addOrganRole(data.organ_id_not_equaled,{role_id:data.role_id}).then(res=>{
+      getRole(selectNodeData.value.id)
+    })
+  }
+  closeEdit()
 }
 //获取组织
 const refersh=()=>{
@@ -377,26 +409,15 @@ const handleAdd =(pid:number)=>{
       })
     })
 }
-//获取组织详情
-const getView =(id:number)=>{
-    getMenuDetail(id).then((res)=>{
-      select_node.value = res.data
-      const {pid,route,name} = res.data
-      queryParams.pid =pid.toString()
-      queryParams.route =route
-      queryParams.name =name
-      edit_status.value = true
-    })
-}
-//组织重命名
-const handleUpdate =(data:object)=>{
-  updateMenu(select_node.value.id,queryParams).then(res=>{
-    // resetQuery()
-    refersh()
-    defaultNodekey.value = [select_node.value.id]
-    edit_status.value = false
-  })
-}
+// //组织重命名
+// const handleUpdate =(data:object)=>{
+//   updateMenu(select_node.value.id,queryParams).then(res=>{
+//     // resetQuery()
+//     refersh()
+//     defaultNodekey.value = [select_node.value.id]
+//     edit_status.value = false
+//   })
+// }
 // 删除
 const handleDelete = (id:number) => {
    ElMessageBox.confirm('确认删除当前组织?', '警告', {
@@ -415,15 +436,16 @@ const handleDelete = (id:number) => {
     })
     .catch(() => ElMessage.info('已取消删除'));
 }
-//批量删除角色
-function handleRoleDelete(){}
+
 //设置员工角色
 function handelUserRole(row:object){
   console.log(row);
   
 }
 //批量删除员工
-function handleDeleteUser(){}
+function handleDeleteUser(){
+
+}
 //调组
 function editUserArray(){
 

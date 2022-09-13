@@ -129,13 +129,24 @@ export function deleteOrgan(id:any,data:object){
   })
 }
 /*
+  组织重命名
+*/
+export function reName(id:any,name:string){
+  return request({
+    url:`/auth/organ/${id}`,
+    method:'put',
+    data:{name}
+  })
+}
+
+/*
   获取组织对应角色列表
 */
 export function getOrganRole(data:object){
   return request({
     url:`/auth/organ/roles`,
     method:'get',
-    data
+    params:data
   })
 }
 
@@ -146,7 +157,7 @@ export function getOrganUser(data:object){
   return request({
     url:`/auth/organ/admins`,
     method:'get',
-    data
+    params:data
   })
 }
 /*
