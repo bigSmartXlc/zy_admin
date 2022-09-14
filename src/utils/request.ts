@@ -64,7 +64,9 @@ service.interceptors.response.use(
       if (response.data instanceof ArrayBuffer) {
         return response;
       }
-
+      if(Array.isArray(response.data)){
+        return response;
+      }
       ElMessage({
         message: message || '系统出错',
         type: 'error'

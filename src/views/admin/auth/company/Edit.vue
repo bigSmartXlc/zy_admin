@@ -83,12 +83,12 @@ const route = useRoute()
     }
     //查询组织角色
     function getRole(organ_id:any,companyId:any){
-      getOrganRole({...organ_id,...companyId,page:queryParams.value.page}).then(res=>{
+      getOrganRole({...organ_id,...companyId,...queryParams.value}).then(res=>{
         tableData.value=res.data
       })
     }
     function getUser(){
-      getOrganUser({organ_id:0,page:queryParams.value.page}).then(res=>{
+      getOrganUser({organ_id:0,...queryParams.value}).then(res=>{
         tableData.value=res.data
       })
     }
@@ -104,7 +104,11 @@ const route = useRoute()
         })
         emit('submit',{role_id,...props.editId,type:1})
       }else{
-        emit('submit',multipleSelection.value,0)
+        const admin_id = [] as any
+        multipleSelection.value.forEach((item:any)=>{
+          admin_id.push(item.id)
+        })
+        emit('submit',{admin_id,...props.editId,type:0})
       }
     }
   </script>

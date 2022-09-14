@@ -3,12 +3,20 @@ import { AxiosPromise } from 'axios';
 import {
   UserFormData,
   UserInfo,
-  UserPageResult,
-  UserQueryParam,
 } from '@/types/api/system/user';
 
 /**
  * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
+ * 账号列表 /v3/auth/admin get请求
+    新增账号 /v3/auth/admin/create post请求 'name'登录名, 'password'密码, 'confirm'确认密码, 'nickname'用户名, 'organ_id'部门, 'mobile'手机号, 'company_id'公司
+    修改用户名 /v3/auth/admin/{admin}/editnickname post请求 nickname
+    修改手机号 /v3/auth/admin/{admin}/editmobile post请求 mobile
+    修改密码 /v3/auth/admin/{admin}/password/reset post请求 original原密码 new新密码 confirm确认新密码
+    删除账号 /v3/auth/admin/{admin}/delete post请求
+    启用账号 /v3/auth/admin/{admin}/enable post请求
+    禁用账号 /v3/auth/admin/{admin}/disable post请求
+    获取账号角色列表 /v3/auth/admin/{admin}/getRoles get请求
+    获取组织所有角色列表 /v3/auth/admin/{admin}/getorganrole get请求
  */
 export function getUserInfo(): AxiosPromise<UserInfo> {
   return request({
@@ -23,24 +31,49 @@ export function getUserInfo(): AxiosPromise<UserInfo> {
  * @param queryParams
  */
 export function listUserPages(
-  queryParams: UserQueryParam
-): AxiosPromise<UserPageResult> {
+  queryParams: any
+){
   return request({
-    url: '/youlai-admin/api/v1/users/pages',
+    url: '/auth/admin',
     method: 'get',
     params: queryParams,
   });
 }
 
 /**
- * 获取用户表单详情
+ * 获取用户角色列表
  *
  * @param userId
  */
-export function getUserFormData(userId: number): AxiosPromise<UserFormData> {
+ export function getUserRoles(userId: number){
   return request({
-    url: '/youlai-admin/api/v1/users/' + userId + '/form_data',
+    url: `/auth/admin/${userId}/getRoles`,
     method: 'get',
+  });
+}
+
+/**
+ * 获取组织所有角色列表
+ *
+ * @param userId
+ */
+ export function getAllUserRoles(userId: number){
+  return request({
+    url: `/auth/admin/${userId}/getorganrole`,
+    method: 'get',
+  });
+}
+
+/**
+ * 获取公司部门列表
+ *
+ * @param company_id
+ */
+ export function getCompanyParts(company_id: number){
+  return request({
+    url: `/auth/organ/list`,
+    method: 'get',
+    params:{company:company_id}
   });
 }
 
@@ -51,36 +84,49 @@ export function getUserFormData(userId: number): AxiosPromise<UserFormData> {
  */
 export function addUser(data: any) {
   return request({
-    url: '/youlai-admin/api/v1/users',
+    url: '/auth/admin/create',
     method: 'post',
     data: data,
   });
 }
 
 /**
- * 修改用户
+ * 修改用户名
  *
  * @param id
  * @param data
  */
-export function updateUser(id: number, data: UserFormData) {
+export function updateUsername(id: number, data: object) {
   return request({
-    url: '/youlai-admin/api/v1/users/' + id,
-    method: 'put',
+    url: `/auth/admin/${id}/editnickname`,
+    method: 'post',
     data: data,
   });
 }
 
 /**
- * 选择性修改用户
+ * 修改手机号
  *
  * @param id
  * @param data
  */
-export function updateUserPart(id: number, data: any) {
+ export function updateUserphone(id: number, data: object) {
   return request({
-    url: '/youlai-admin/api/v1/users/' + id,
-    method: 'patch',
+    url: `/auth/admin/${id}/editmobile`,
+    method: 'post',
+    data: data,
+  });
+}
+/**
+ * 修改用户密码
+ *
+ * @param id
+ * @param data
+ */
+export function updateUserPass(id: number, data: any) {
+  return request({
+    url: `/auth/admin/${id}/password/reset`,
+    method: 'post',
     data: data,
   });
 }
@@ -88,59 +134,36 @@ export function updateUserPart(id: number, data: any) {
 /**
  * 删除用户
  *
- * @param ids
+ * @param id
  */
-export function deleteUsers(ids: string) {
+export function deleteUsers(id: string) {
   return request({
-    url: '/youlai-admin/api/v1/users/' + ids,
-    method: 'delete',
-  });
-}
-
-/**
- * 下载用户导入模板
- *
- * @returns
- */
-export function downloadTemplate() {
-  return request({
-    url: '/youlai-admin/api/v1/users/template',
-    method: 'get',
-    responseType: 'arraybuffer',
-  });
-}
-
-/**
- * 导出用户
- *
- * @param queryParams
- * @returns
- */
-export function exportUser(queryParams: UserQueryParam) {
-  return request({
-    url: '/youlai-admin/api/v1/users/_export',
-    method: 'get',
-    params: queryParams,
-    responseType: 'arraybuffer',
-  });
-}
-
-/**
- * 导入用户
- *
- * @param file
- */
-export function importUser(deptId: number, roleIds: string, file: File) {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('deptId', deptId.toString());
-  formData.append('roleIds', roleIds);
-  return request({
-    url: '/youlai-admin/api/v1/users/_import',
+    url: `/auth/admin/${id}/delete`,
     method: 'post',
-    data: formData,
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
   });
 }
+
+/**
+ * 启用
+ *
+ * @param id
+ */
+ export function enableUsers(id: number) {
+  return request({
+    url: `/auth/admin/${id}/enable`,
+    method: 'post',
+  });
+}
+
+/**
+ * 停用用户
+ *
+ * @param id
+ */
+ export function disableUsers(id: number) {
+  return request({
+    url: `/auth/admin/${id}/disable`,
+    method: 'post',
+  });
+}
+

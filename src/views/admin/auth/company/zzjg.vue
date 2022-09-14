@@ -5,7 +5,7 @@
       <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8"
       >   
           <dv-border-box-9 class="border_style">
-              <p>浅橙文化
+              <p>部门架构
                   <el-button
                   type="success"
                   :icon="Plus"
@@ -143,7 +143,7 @@
               >
                   <el-table-column type="selection"/>
                   <el-table-column property="name" label="账号"/>
-                  <el-table-column property="name" label="用户名"/>
+                  <el-table-column property="nickname" label="用户名"/>
                     <el-table-column label="操作" align="left">
                       <template #default="scope">
                           <el-button
@@ -217,8 +217,6 @@
 <script lang="ts" setup>
 import {
   onMounted,
-  watch,
-  reactive,
   ref,
 } from 'vue';
 import {
@@ -237,9 +235,7 @@ import { Plus, Edit, Delete,Avatar,User } from '@element-plus/icons-vue';
 import RoleEdit from './Edit.vue'
 import { ElForm,ElMessage, ElMessageBox } from 'element-plus'
 import type Node from 'element-plus/es/components/tree/src/model/node'
-import useStore from '@/store';
 import { useRoute} from 'vue-router';
-import router from '@/router';
 const dialog=ref({
   editId:'',
   visible:false,
@@ -291,7 +287,6 @@ const handleSelectionChange1 = (val:any) => {
   }
 }
 //勾选角色
-
 const handleSelectionChange = (val:any) => {
   multipleSelection_role.value = val
   if(multipleSelection_role.value.length>0){
@@ -345,9 +340,11 @@ function getRole(organ_id:any){
     role_tabledata.value=res.data
   })
 }
+//查询组织员工
 function getUser(organ_id:any){
   getOrganUser({organ_id}).then(res=>{
     console.log(res);
+    tableData.value=res.data
   })
 }
 //打开/关闭添加角色弹框
@@ -358,6 +355,7 @@ function handleAddRole(data:any){
     title:'添加角色'
   }
 }
+//添加员工
 function handleAddUser(data:any,select_data:any){
   selectNodeData.value = select_data
   dialog.value={
@@ -366,6 +364,7 @@ function handleAddUser(data:any,select_data:any){
     title:'添加员工'
   }
 }
+//关闭弹窗
 function closeEdit(){
   dialog.value={
     editId:'',
@@ -378,6 +377,10 @@ function submit(data:any){
   if(data.type==1){
     addOrganRole(data.organ_id_not_equaled,{role_id:data.role_id}).then(res=>{
       getRole(selectNodeData.value.id)
+    })
+  }else{
+    addOrganUser(data.organ_id_not_equaled,{admin_id:data.admin_id}).then(res=>{
+      getUser(selectNodeData.value.id)
     })
   }
   closeEdit()
@@ -409,15 +412,6 @@ const handleAdd =(pid:number)=>{
       })
     })
 }
-// //组织重命名
-// const handleUpdate =(data:object)=>{
-//   updateMenu(select_node.value.id,queryParams).then(res=>{
-//     // resetQuery()
-//     refersh()
-//     defaultNodekey.value = [select_node.value.id]
-//     edit_status.value = false
-//   })
-// }
 // 删除
 const handleDelete = (id:number) => {
    ElMessageBox.confirm('确认删除当前组织?', '警告', {
@@ -444,11 +438,29 @@ function handelUserRole(row:object){
 }
 //批量删除员工
 function handleDeleteUser(){
-
+  ElMessageBox.confirm('确认删除选中的员工吗?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(() => {
+      const admin_id = [] as any
+      multipleSelection_user.value.forEach((item:any)=>{
+        admin_id.push(item.id)
+      })
+      deleteOrganUser(selectNodeData.value.id,{admin_id:admin_id}).then(res=>{
+        ElMessage({
+        type: 'warning',
+        message: '已删除',
+      })
+        getUser(selectNodeData.value.id)
+      })
+    })
+    .catch(() => ElMessage.info('已取消删除'));
 }
 //调组
 function editUserArray(){
-
+  
 }
 </script>
 <style lang="scss" scoped>

@@ -48,23 +48,23 @@ export const constantRoutes: Array<RouteRecordRaw> = [
         path: 'admin/auth/company/zzjg',
         name:'ZZJQ',
         component: () => import('@/views/admin/auth/company/zzjg.vue'),
-        meta: { hidden: true }
+        meta: { hidden: true ,title:'公司详情'}
       }
     ]
   },
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [
-      {
-        path: 'admin/auth/userManagment',
-        name:'Users',
-        component: () => import('@/views/admin/auth/userManagment/index.vue'),
-        meta: { title:'账号管理'}
-      },
-    ]
-  }
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   children: [
+  //     {
+  //       path: 'admin/auth/userManagment',
+  //       name:'Users',
+  //       component: () => import('@/views/admin/auth/userManagment/index.vue'),
+  //       meta: { title:'账号管理'}
+  //     },
+  //   ]
+  // }
   // 外部链接
   /*{
         path: '/external-link',
