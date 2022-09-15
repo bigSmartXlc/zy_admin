@@ -61,7 +61,7 @@ export const filterAsyncRoutes = (
         meta: { title: tmp.name, icon: tmp.route == ''?'homepage':'', affix: false ,hidden:tmp.display==false},
     }
     if (hasPermission(roles, tmp)) {
-      if (tmp.route == ''||!tmp.id) {
+      if (tmp.route == ''||!tmp.display) {
         item.path = '/'
         item.component = Layout;
       } else {

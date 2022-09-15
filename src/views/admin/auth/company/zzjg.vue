@@ -204,6 +204,19 @@
       </el-col>
       </el-row>
     </div>
+        <!-- 表单弹窗 -->
+    <el-dialog :title="userRole.title" v-model="userRole.visible" custom-class="width_class">
+      <el-checkbox-group v-model="checkList">
+        <div v-for="(item,index) in roleList" :key="index">
+          <el-checkbox :label="item.id">{{item.name}}</el-checkbox>
+        </div>
+      </el-checkbox-group>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="handelDistribut">确 定</el-button>
+        </div>
+      </template>
+    </el-dialog>
     <RoleEdit
         :visible="dialog.visible"
         :title="dialog.title"
@@ -229,7 +242,10 @@ import {
   addOrganRole,
   deleteOrganRole,
   addOrganUser,
-  deleteOrganUser
+  deleteOrganUser,
+  getUserRoles,
+  getAllUserRoles,
+  setUserRole
 } from '@/api/system/company';
 import { Plus, Edit, Delete,Avatar,User } from '@element-plus/icons-vue';
 import RoleEdit from './Edit.vue'
@@ -249,6 +265,10 @@ const queryParams1=ref({
   page:1,
   pageSize:10
 })
+const userRole=ref({
+  title:'角色分配',
+  visible:false
+})
 const total = ref(0)
 const total1 = ref(0)
 const layout = 'total, prev, pager, next'
@@ -258,6 +278,7 @@ const multipleSelection_role = ref([])
 const multipleSelection_user = ref([])
 const tableData =ref([])
 const role_tabledata = ref([])
+
 //重命名
 function handleRename(id:any){
   ElMessageBox.prompt('请输入组织名', '添加组织', {
@@ -343,7 +364,6 @@ function getRole(organ_id:any){
 //查询组织员工
 function getUser(organ_id:any){
   getOrganUser({organ_id}).then(res=>{
-    console.log(res);
     tableData.value=res.data
   })
 }
@@ -431,10 +451,39 @@ const handleDelete = (id:number) => {
     .catch(() => ElMessage.info('已取消删除'));
 }
 
+
+const checkList = ref([]) as any
+const roleList=ref([]) as any
+const user_id = ref('')
 //设置员工角色
-function handelUserRole(row:object){
-  console.log(row);
-  
+function handelUserRole(row:any){
+  user_id.value = row.id
+  getAllUserRoles(row.id).then(res=>{
+    roleList.value=res.data
+  })
+  getUserRoles(row.id).then(res=>{
+    const role_id = [] as any
+    res.data.forEach((item:any)=>{
+      role_id.push(item.id)
+    })
+    checkList.value=role_id
+  })
+  userRole.value={
+    visible:true,
+    title:`${row.nickname}--角色分配`
+  }
+}
+//分配角色
+function handelDistribut(){
+  if(checkList.value.length>0){
+    setUserRole(user_id.value,{role_ids:checkList.value}).then(res=>{
+      ElMessage({
+        type: 'success',
+        message: '分配角色成功'})
+      userRole.value.visible=false
+    })
+    console.log(checkList.value)
+  }
 }
 //批量删除员工
 function handleDeleteUser(){

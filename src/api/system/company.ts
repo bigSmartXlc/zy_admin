@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+
 /**
  * 获取公司分页数据
  *
@@ -98,6 +99,42 @@ import request from '@/utils/request';
   })
  }
 /*-----------------------------详情页-----------------------------*/
+
+/**
+ * 获取账号角色列表
+ *
+ * @param userId
+ */
+ export function getUserRoles(userId: number){
+  return request({
+    url: `/auth/admin/${userId}/getrole`,
+    method: 'get',
+  });
+}
+
+/**
+ * 获取组织所有角色列表
+ *
+ * @param userId
+ */
+ export function getAllUserRoles(userId: number){
+  return request({
+    url: `/auth/admin/${userId}/getorganrole`,
+    method: 'get',
+  });
+}
+
+/*
+  账号分配角色
+*/
+export function setUserRole(id:any,data:any){
+  return request({
+    url:`/auth/admin/${id}/givenrole`,
+    method:'put',
+    data
+  })
+}
+
  /*
   获取公司组织架构
  */

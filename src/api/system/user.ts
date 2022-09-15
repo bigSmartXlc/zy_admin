@@ -6,10 +6,10 @@ import {
 } from '@/types/api/system/user';
 
 /**
- * 登录成功后获取用户信息（昵称、头像、权限集合和角色集合）
+ * 登录成功后获取账号信息（昵称、头像、权限集合和角色集合）
  * 账号列表 /v3/auth/admin get请求
-    新增账号 /v3/auth/admin/create post请求 'name'登录名, 'password'密码, 'confirm'确认密码, 'nickname'用户名, 'organ_id'部门, 'mobile'手机号, 'company_id'公司
-    修改用户名 /v3/auth/admin/{admin}/editnickname post请求 nickname
+    新增账号 /v3/auth/admin/create post请求 'name'登录名, 'password'密码, 'confirm'确认密码, 'nickname'账号名, 'organ_id'部门, 'mobile'手机号, 'company_id'公司
+    修改账号名 /v3/auth/admin/{admin}/editnickname post请求 nickname
     修改手机号 /v3/auth/admin/{admin}/editmobile post请求 mobile
     修改密码 /v3/auth/admin/{admin}/password/reset post请求 original原密码 new新密码 confirm确认新密码
     删除账号 /v3/auth/admin/{admin}/delete post请求
@@ -26,7 +26,7 @@ export function getUserInfo(): AxiosPromise<UserInfo> {
 }
 
 /**
- * 获取用户分页列表
+ * 获取账号分页列表
  *
  * @param queryParams
  */
@@ -40,29 +40,7 @@ export function listUserPages(
   });
 }
 
-/**
- * 获取用户角色列表
- *
- * @param userId
- */
- export function getUserRoles(userId: number){
-  return request({
-    url: `/auth/admin/${userId}/getRoles`,
-    method: 'get',
-  });
-}
 
-/**
- * 获取组织所有角色列表
- *
- * @param userId
- */
- export function getAllUserRoles(userId: number){
-  return request({
-    url: `/auth/admin/${userId}/getorganrole`,
-    method: 'get',
-  });
-}
 
 /**
  * 获取公司部门列表
@@ -78,7 +56,7 @@ export function listUserPages(
 }
 
 /**
- * 添加用户
+ * 添加账号
  *
  * @param data
  */
@@ -91,7 +69,7 @@ export function addUser(data: any) {
 }
 
 /**
- * 修改用户名
+ * 修改账号名
  *
  * @param id
  * @param data
@@ -118,7 +96,7 @@ export function updateUsername(id: number, data: object) {
   });
 }
 /**
- * 修改用户密码
+ * 修改账号密码
  *
  * @param id
  * @param data
@@ -132,7 +110,7 @@ export function updateUserPass(id: number, data: any) {
 }
 
 /**
- * 删除用户
+ * 删除账号
  *
  * @param id
  */
@@ -156,7 +134,7 @@ export function deleteUsers(id: string) {
 }
 
 /**
- * 停用用户
+ * 停用账号
  *
  * @param id
  */
