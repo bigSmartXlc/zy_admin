@@ -4,7 +4,7 @@
       <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8"
       >   
-          <dv-border-box-9 class="border_style">
+          <div class="border_style">
               <p>部门架构
                   <el-button
                   type="success"
@@ -111,10 +111,11 @@
                       </template>
                   </el-tree>
               </div>
-          </dv-border-box-9>
+          </div>
       </el-col>
       <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8" v-if="selectNodeData.id">
-          <dv-border-box-11 title="员工列表" :title-width="250" class="border_style11">
+          <div title="员工列表" :title-width="250" class="border_style">
+            <h2 class="title">员工列表</h2>
               <div>
                    <el-button
                   type="success"
@@ -129,13 +130,13 @@
                   :disabled="can_delate_user"
                   @click="handleDeleteUser()"
               >删除</el-button>
-                <el-button
+                <!-- <el-button
                   type="primary"
                   :icon="Edit"
                    size="small"
                    :disabled="can_delate_user"
                   @click="editUserArray()"
-              >调组</el-button>
+              >调组</el-button> -->
                <el-table
                   ref="multipleTableRef"
                   :data="tableData"
@@ -164,10 +165,11 @@
                 @pagination="getUser(selectNodeData.id)"
               />
               </div>
-          </dv-border-box-11>
+          </div>
       </el-col>
       <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8" v-if="selectNodeData.id">
-          <dv-border-box-11 title="角色列表" :title-width="250" class="border_style11">
+          <div title="角色列表" :title-width="250" class="border_style">
+            <h2 class="title">角色列表</h2>
               <div>
                 <el-button
                   type="success"
@@ -200,7 +202,7 @@
                 @pagination="getRole(selectNodeData.id)"
               />
               </div> 
-          </dv-border-box-11>
+          </div>
       </el-col>
       </el-row>
     </div>
@@ -507,15 +509,12 @@ function handleDeleteUser(){
     })
     .catch(() => ElMessage.info('已取消删除'));
 }
-//调组
-function editUserArray(){
-  
-}
 </script>
 <style lang="scss" scoped>
     .tree_style{
-        max-height: 800px;
-        height: 75vh;
+        // max-height: 800px;
+        height: calc(100vh - 120px);
+        overflow: auto;
         .checkedNode{
           background-color: bisque;
           .btnlist{
@@ -536,9 +535,15 @@ function editUserArray(){
         }
     }
     .border_style{
+        height: calc(100vh - 120px);
+        // max-height: 800px;
+        border: solid 1px #909399;
+        border-radius: 15px;
         padding: 20px;
-    }
-    .border_style11{
-        padding: 60px 20px 10px;
+        .title{
+          text-align: center;
+          color: #909399 !important;
+          margin-top: 0;
+        }
     }
 </style>
