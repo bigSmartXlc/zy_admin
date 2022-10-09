@@ -5,6 +5,9 @@
   // element plus 2.1.0 禁用文本色值和正常文本色值无法区分问题
   --el-text-color-disabled: #ccc;
 }
+.large_dialog{
+  margin-top: 5vh !important;
+}
 .width_class{
   width: 95%;
   max-width: 500px;
