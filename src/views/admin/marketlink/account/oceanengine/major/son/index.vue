@@ -127,7 +127,7 @@
         <!-- 数据表格 -->
         <el-table
           :data="permList"
-          v-loading="loading"
+          v-loading="loading"  
           border
         >
           <el-table-column label="广告主ID" prop="accountId"/>
@@ -176,7 +176,7 @@
                     v-model="dialogParams.start_time"
                     type="date"
                     value-format="YYYY-MM-DD"
-                    placeholder="开始日期"
+                    placeholder="开始日期" 
                     @change="dialog_Query"
               />
                 </el-form-item>
@@ -226,7 +226,7 @@
                 v-if="dialog_total > 0"
                 :total="dialog_total"
                 v-model:page="dialogParams.page"
-                v-model:limit="dialogParams.pageSize"
+                v-model:limit="dialogParams.pageSize"   
                 :layout="layout"
                 :page-sizes="[15,30,50,100]"
                 @pagination="dialog_Query"

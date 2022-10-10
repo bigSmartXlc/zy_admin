@@ -44,16 +44,16 @@ service.interceptors.response.use(
     }else if (codeList.includes(code) && router.currentRoute.value.path != 'page/login') {
       if (messageTimes === true) {
         messageTimes = false
-        ElMessageBox.alert(response.data.message, 'token验证失败', {
-          // if you want to disable its autofocus
-          // autofocus: false,
-          showClose: false,
-          confirmButtonText: 'OK',
-          callback: (action: Action) => {
+        // ElMessageBox.alert(response.data.message, 'token验证失败', {
+        // if you want to disable its autofocus
+        // autofocus: false,
+        //   showClose: false,
+        //   confirmButtonText: 'OK',
+        //   callback: (action: Action) => {
             user.resetToken();
             router.push('/pages/login')
-          },
-        })
+        //   },
+        // })
       }
       setTimeout(() => {
         messageTimes = true
