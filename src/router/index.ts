@@ -32,7 +32,7 @@ export const constantRoutes: Array<RouteRecordRaw> = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    children: [
+    children: [ 
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index.vue'),
@@ -49,6 +49,54 @@ export const constantRoutes: Array<RouteRecordRaw> = [
         name:'ZZJQ',
         component: () => import('@/views/admin/auth/company/zzjg.vue'),
         meta: { hidden: true ,title:'公司详情'}
+      },
+      {
+        path: 'admin/cp',
+        name:'CP',
+        component: () => import('@/views/admin/cps/cp/index.vue'),
+        meta: { hidden: true ,title:'CP'}
+      },
+      {
+        path: 'admin/program',
+        name:'program',
+        component: () => import('@/views/admin/cps/program/index.vue'),
+        meta: { hidden: true ,title:'项目'}
+      },
+      {
+        path: 'admin/game',
+        name:'game',
+        component: () => import('@/views/admin/cps/game/index.vue'),
+        meta: { hidden: true ,title:'游戏'}
+      },
+      {
+        path: 'admin/spkg',
+        name:'spkg',
+        component: () => import('@/views/admin/cps/spkg/index.vue'),
+        meta: { hidden: true ,title:'子包'}
+      },
+      {
+        path: 'admin/coin/goods',
+        name:'goods',
+        component: () => import('@/views/admin/coin/goods/index.vue'),
+        meta: { hidden: true ,title:'平台币商品'}
+      },
+      {
+        path: 'admin/coin/orders',
+        name:'orders',
+        component: () => import('@/views/admin/coin/orders/index.vue'),
+        meta: { hidden: true ,title:'平台币订单'}
+      },
+      {
+        path: 'admin/payOrder/goods',
+        name:'payordersGoods',
+        component: () => import('@/views/admin/payOrder/goods/index.vue'),
+        meta: { hidden: true ,title:'订单列表'}
+      },
+      {
+        path: 'admin/payOrder/orders',
+        name:'payorders',
+        component: () => import('@/views/admin/payOrder/orders/index.vue'),
+        meta: { hidden: true ,title:'修正订单列表'}
       }
     ]
   },

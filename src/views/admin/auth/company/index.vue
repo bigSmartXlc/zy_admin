@@ -63,6 +63,7 @@ const state = reactive({
   ],
   cateSelect:{},
   edit_permission_selected_row:{} as any,
+  channelShow:true,
 });
 const {
   loading,
@@ -74,6 +75,7 @@ const {
   rules,
   requestMethodOptions,
   queryParams,
+  channelShow
 } = toRefs(state);
 //权限查询
 const router = useRouter();
@@ -111,6 +113,7 @@ function handleQuery() {
       state.loading = false;
       channelOptions.value = data.channelSelect
       companyOptions.value = []
+      state.channelShow=data.channelShow
       for (let key in data.pCompanieSelect) {
         companyOptions.value.push({
           label:data.pCompanieSelect[key],value:key
@@ -290,7 +293,7 @@ onMounted(() => {
          <el-form-item label="公司别名" prop="alias">
           <el-input v-model="formData.alias" placeholder="请输入公司别名" />
         </el-form-item>
-        <el-form-item  label="渠道" prop="channel_id">
+        <el-form-item v-show="channelShow" label="渠道" prop="channel_id">
         <el-select
           v-model="formData.channel_id"
           placeholder="选择渠道"

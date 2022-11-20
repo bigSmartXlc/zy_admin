@@ -214,7 +214,7 @@ function handleDelete(row: any) {
     })
     .catch(() => ElMessage.info('已取消删除'));
 }
-function handleStatusChange(row:any){
+function handleSwitch(row:any){
   swich_permission(row.id).then(()=>{
     handleQuery();
   })
@@ -298,7 +298,7 @@ onMounted(() => {
               v-model="scope.row.status"
                   :inactive-value="0"
                   :active-value="1"
-                  @change="handleStatusChange(scope.row)"
+                  @change="handleSwitch(scope.row)"
             />
           </template>  
       </el-table-column>

@@ -7,13 +7,12 @@
     } from 'vue';
     
     import {
-    getMajorList,
-    createAccount,
-    destoryAccount,
-    refreshAccount
+      getMajorList,
+      createAccount,
+      destoryAccount,
+      refreshAccount
     } from '@/api/linkurl';
     import { Search, Plus, Edit, Refresh, Delete,View } from '@element-plus/icons-vue';
-    
     import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
     import { Dialog} from '@/types/common';
     const queryFormRef = ref(ElForm);
@@ -30,6 +29,7 @@
       total: 0,
       dialog: {
         visible: false,
+        title:''
       } as Dialog,
       edit_permission_selected_row:[] as any,
     });

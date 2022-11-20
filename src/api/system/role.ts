@@ -145,7 +145,7 @@ export function updateRole(id: number, data: RoleFormData) {
  *
  * @param ids
  */
-export function deleteRoles(id: number) {
+export function deleteRoles(id: any) {
   return request({
     url: `/auth/role/${id}/delete`,
     method: 'post',

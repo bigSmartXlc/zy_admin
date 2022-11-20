@@ -18,7 +18,6 @@ const useUserStore = defineStore({
   }),
   actions: {
     async RESET_STATE() {
-      console.log(this);
       this.$reset();
     },
     /**

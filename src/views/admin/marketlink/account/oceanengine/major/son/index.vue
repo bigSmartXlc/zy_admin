@@ -11,7 +11,7 @@
         refreshFund,
         getDayFlow
     } from '@/api/linkurl';
-    import { Search, Refresh,View} from '@element-plus/icons-vue';
+    import { Search, Refresh, View} from '@element-plus/icons-vue';
     import { Dialog} from '@/types/common';
     import { ElForm, ElMessage } from 'element-plus';
     const queryFormRef = ref(ElForm);
@@ -116,10 +116,12 @@
               v-model="queryParams.search"
               placeholder="账户信息"
               clearable
-          />
+            />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
+            <el-button type="primary" :icon="Search" @click="handleQuery"
+              >搜索</el-button
+            >
             <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
           </el-form-item>
         </el-form>
@@ -127,17 +129,17 @@
         <!-- 数据表格 -->
         <el-table
           :data="permList"
-          v-loading="loading"  
+          v-loading="loading"
           border
         >
-          <el-table-column label="广告主ID" prop="accountId"/>
-          <el-table-column label="账号名" prop="name"/>
-          <el-table-column label="上级账号" prop="parentName"/>
-          <el-table-column label="账户总金额(元)" prop="cash"/>
-          <el-table-column label="账户可用总金额(元)" prop="valid_cash"/>
-          <el-table-column label="现金余额(元)" prop="balance"/>
-          <el-table-column label="现金可用余额(元)" prop="valid_balance"/>
-          <el-table-column label="创建时间" prop="createdAt"/>
+          <el-table-column label="广告主ID" prop="accountId"  />
+          <el-table-column label="账号名" prop="name"  />
+          <el-table-column label="上级账号" prop="parentName"  />
+          <el-table-column label="账户总金额(元)" prop="cash"  />
+          <el-table-column label="账户可用总金额(元)" prop="valid_cash"  />
+          <el-table-column label="现金余额(元)" prop="balance"  />
+          <el-table-column label="现金可用余额(元)" prop="valid_balance"  />
+          <el-table-column label="创建时间" prop="createdAt"  />
           <el-table-column label="操作" align="left" width="250">
             <template #default="scope">
                  <el-button
@@ -165,20 +167,20 @@
           :layout="layout"
           :page-sizes="[15,30,50,100]"
           @pagination="handleQuery"
-      />
+        />
         <!-- 表单弹窗 -->
         <el-dialog :title="dialog.title" v-model="dialog.visible" width="80%" custom-class="large_dialog"
         >
                  <!-- 搜索表单 -->
-          <el-form ref="dialogFormRef" :model="dialogParams" :inline="true">
+                <el-form ref="dialogFormRef" :model="dialogParams" :inline="true">
             <el-form-item prop="start_time">
                 <el-date-picker
                     v-model="dialogParams.start_time"
                     type="date"
                     value-format="YYYY-MM-DD"
-                    placeholder="开始日期" 
+                    placeholder="开始日期"
                     @change="dialog_Query"
-              />
+                />
                 </el-form-item>
                 <el-form-item prop="end_time">  
                 <el-date-picker
@@ -187,17 +189,19 @@
                     value-format="YYYY-MM-DD"
                     placeholder="结束日期"
                     @change="dialog_Query"
-              />
+                />
                 </el-form-item>
                 <el-form-item prop="search">
                     <el-input
                     v-model="dialogParams.search"
                     placeholder="流水信息"
                     clearable
-                  />
+                    />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" :icon="Search" @click="dialog_Query">搜索</el-button>
+                    <el-button type="primary" :icon="Search" @click="dialog_Query"
+                    >搜索</el-button
+                    >
                     <el-button :icon="Refresh" @click="dialog_resetQuery">重置</el-button>
                 </el-form-item>
                 </el-form>
@@ -209,16 +213,16 @@
                 border
                 >
                     <el-table-column label="广告主ID" prop="accountId" width="200" />
-                    <el-table-column label="日期" prop="date"/>
-                    <el-table-column label="日终结余(元)" prop="balance"/>
-                    <el-table-column label="现金支出(元)" prop="cash_cost"/>
-                    <el-table-column label="总支出(元)" prop="cost"/>
-                    <el-table-column label="冻结(元)" prop="frozen"/>
-                    <el-table-column label="总存入(元)" prop="income"/>
-                    <el-table-column label="赠款支出(元)" prop="reward_cost"/>
-                    <el-table-column label="总转入(元)" prop="shared_wallet_cost"/>
-                    <el-table-column label="总存入(元)" prop="transfer_in"/>
-                    <el-table-column label="总转出(元)" prop="transfer_out"/>
+                    <el-table-column label="日期" prop="date"  />
+                    <el-table-column label="日终结余(元)" prop="balance"  />
+                    <el-table-column label="现金支出(元)" prop="cash_cost"  />
+                    <el-table-column label="总支出(元)" prop="cost"  />
+                    <el-table-column label="冻结(元)" prop="frozen"  />
+                    <el-table-column label="总存入(元)" prop="income"  />
+                    <el-table-column label="赠款支出(元)" prop="reward_cost"  />
+                    <el-table-column label="总转入(元)" prop="shared_wallet_cost"  />
+                    <el-table-column label="总存入(元)" prop="transfer_in"  />
+                    <el-table-column label="总转出(元)" prop="transfer_out"  />
                 </el-table>
             
                 <!-- 分页工具条 -->
@@ -226,11 +230,11 @@
                 v-if="dialog_total > 0"
                 :total="dialog_total"
                 v-model:page="dialogParams.page"
-                v-model:limit="dialogParams.pageSize"   
+                v-model:limit="dialogParams.pageSize"
                 :layout="layout"
                 :page-sizes="[15,30,50,100]"
                 @pagination="dialog_Query"
-              />            
+                />            
         </el-dialog>
       </div>
     </template>

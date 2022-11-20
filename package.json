@@ -9,6 +9,16 @@
     "prepare": "husky install",
     "prettier": "prettier --write ."
   },
+  "eslintConfig":{
+    "rules": {
+      "no-debugger": "off",
+      "no-console": "off",
+      "generator-star-spacing": "off",
+      "no-tabs": "off",
+      "no-unused-vars": "off",
+      "no-irregular-whitespace": "off"
+  }
+  },
   "dependencies": {
     "@element-plus/icons-vue": "^1.0.0",
     "@kjgl77/datav-vue3": "^1.2.1",

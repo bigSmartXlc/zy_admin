@@ -27,7 +27,7 @@ router.beforeEach(async (to, from, next) => {
         });
       }
         if (to.matched.length === 0) {
-          next({ path: to.path })
+          from.name ? next({ name: from.name as any }) : next('/401');
         } else {
           next();
         }
@@ -35,12 +35,6 @@ router.beforeEach(async (to, from, next) => {
 
       // const hasGetUserInfo = true;
       // if (hasGetUserInfo) {
-       
-      //   if (to.matched.length === 0) {
-      //     from.name ? next({ name: from.name as any }) : next('/401');
-      //   } else {
-      //     next();
-      //   }
       // } else {
       //   try {
       //     // await user.getUserInfo();
@@ -61,7 +55,7 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     // 未登录可以访问白名单页面(登录页面)
-    if (whiteList.indexOf(to.path) !== -1) {
+    if (whiteList.includes(to.path)) {
       next();
     } else {
       next(`/login?redirect=${to.path}`);

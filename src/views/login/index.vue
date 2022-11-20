@@ -62,37 +62,6 @@
             </span>
           </el-form-item>
         </el-tooltip>
-  
-        <!-- 验证码 -->
-        <el-form-item prop="code">
-          <span class="svg-container">
-            <svg-icon icon-class="valid_code" />
-          </span>
-          <el-input
-            v-model="loginForm.code"
-            auto-complete="off"
-            :placeholder="$t('login.code')"
-            style="width: 65%"
-            @keyup.enter="handleLogin"
-          >
-          </el-input>
-          <span class="getCode">
-          <el-button 
-          type="primary"
-          :loading="getCode_loading"
-           @click="handleCaptchaGenerate"
-           :disabled='codetime>0'
-          >{{codetime<=0?'获取验证码':codetime+'s'}}</el-button>
-        </span>
-  
-          <!-- <div class="captcha">
-            <img
-              :src="captchaBase64"
-              height="38px"
-            />
-          </div> -->
-        </el-form-item>
-  
         <el-button
           size="default"
           :loading="loading"
@@ -102,12 +71,6 @@
           >{{ $t('login.login') }}
         </el-button>
   
-        <!-- <div class="tips">
-          <span style="margin-right: 20px"
-            >{{ $t('login.username') }}: admin</span
-          >
-          <span> {{ $t('login.password') }}: 123456</span>
-        </div> -->
         </el-form>
       </el-col>
     </el-row>
@@ -149,10 +112,8 @@ const state = reactive({
   codetime:0,
   redirect: '/',
   loginForm: {
-    name: 'admin',
-    auth_password: '123456',
-    code: '',
-    uuid: '',
+    name: '',
+    auth_password: ''
   } as LoginFormData,
   loginRules: {
     code:[{ required: true, trigger: 'blur' }],
@@ -184,9 +145,7 @@ const {
   loginForm,
   loginRules,
   loading,
-  getCode_loading,
   passwordType,
-  captchaBase64,
   capslockTooltipDisabled,
   showCopyright,
 } = toRefs(state);
@@ -225,26 +184,6 @@ function handleLogin() {
       return false;
     }
   });
-}
-// 获取验证码
-function handleCaptchaGenerate() {
-  const {name,auth_password} = state.loginForm
-  getPhoneCode({
-     name: name,
-    auth_password: auth_password
-  }).then((res)=>{
-    console.log(res);
-     ElMessage({
-        message: '发送成功',
-        type: 'success'
-      });
-      timechange(60)
-  })
-  // getCaptcha().then(({ data }) => {
-  //   const { img, uuid } = data;
-  //   state.captchaBase64 = img;
-  //   state.loginForm.uuid = uuid;
-  // });
 }
 // 倒计时
 function timechange(val:number){

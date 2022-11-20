@@ -1,3 +1,4 @@
+import { ElMessage} from 'element-plus';
 /**
  * Check if an element has a class
  * @param {HTMLElement} elm
@@ -44,4 +45,54 @@ export function mix(color1: string, color2: string, weight: number) {
   const gStr = ('0' + (g || 0).toString(16)).slice(-2);
   const bStr = ('0' + (b || 0).toString(16)).slice(-2);
   return '#' + rStr + gStr + bStr;
+}
+
+
+export function copy(res:any,message='复制成功') {
+  const copyInput = document.createElement('input')// 创建input元素
+  document.body.appendChild(copyInput)// 向页面底部追加输入框
+  copyInput.setAttribute('value', res)// 添加属性，将url赋值给input元素的value属性
+  copyInput.select()// 选择元素
+  document.execCommand('Copy')// 执行复制命令
+  ElMessage.success(message)
+}
+
+export function parseTime(time:any, cFormat:string) {
+  if (arguments.length === 0) {
+    return null
+  }
+  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
+  let date
+  if (typeof time === 'object') {
+    date = time
+  } else {
+    if ((typeof time === 'string') && (/^[0-9]+$/.test(time))) {
+      time = parseInt(time)
+    }
+    if ((typeof time === 'number') && (time.toString().length === 10)) {
+      time = time * 1000
+    }
+    date = new Date(time)
+  }
+  const formatObj = {
+    y: date.getFullYear(),
+    m: date.getMonth() + 1,
+    d: date.getDate(),
+    h: date.getHours(),
+    i: date.getMinutes(),
+    s: date.getSeconds(),
+    a: date.getDay()
+  } as any
+  const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
+    let value = formatObj[key]
+    // Note: getDay() returns 0 on Sunday
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
+    if (result.length > 0 && value < 10) {
+      value = '0' + value
+    }
+    return value || 0
+  })
+  return time_str
 }

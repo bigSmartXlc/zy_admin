@@ -52,7 +52,6 @@ export function getSonAccount(data:any){
         url: `/marketlink/account/oceanengine/major/son/list`,
         method: 'get',
         params: data,
-        
       });
 }
 

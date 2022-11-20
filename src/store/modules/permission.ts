@@ -27,34 +27,12 @@ export const filterAsyncRoutes = (
   roles: string[]
 ) => {
   const res: RouteRecordRaw[] = [];
-  routes.forEach((route) => {
+  routes.sort(function(a:any, b:any) { return a.order - b.order })
+  routes.forEach((route,index) => {
     const tmp = { ...route } as any;
-    const icon = {
-      167: 'homepage',
-      170: 'UsersIcon',
-      172: 'ClipboardIcon',
-      174: 'CopyIcon',
-      180: 'GiftIcon', // 扶持申请
-      178: 'UserIcon',
-      187: 'StopCircleIcon',
-      165: 'MenuIcon'
-      // 'SendIcon', // 落地页管理
-      // 'HeadphonesIcon', // 客诉管理
-      // 'MessageSquareIcon', // 客服消息
-      // 'AwardIcon', // 组织管理
-      // 'BoxIcon', // 其他设置
-      // 'CodepenIcon', // 游戏发行管理
-      // 'UserPlusIcon', // 游戏用户管理
-      // 'FilePlusIcon', // 游戏订单管理
-      // 'MinusSquareIcon', // 游戏数据统计
-      // 'StopCircleIcon', // 平台币代充
-      // 'DollarSignIcon', // 提现管理
-      // 'AwardIcon', // 个人中心
-      // 'SettingsIcon'// 系统设置
-    }
     const item:any = {
-        id:tmp.id||999,
-        order:tmp.order||999,
+        id:tmp.id||999+index,
+        order:tmp.order||999+index,
         path:tmp.route,
         component: Layout,
         name: tmp.name,
@@ -90,6 +68,7 @@ const usePermissionStore = defineStore({
     addRoutes: [],
   }),
   actions: {
+
     setRoutes(routes: RouteRecordRaw[]) {
       this.addRoutes = routes;
       this.routes = constantRoutes.concat(routes);

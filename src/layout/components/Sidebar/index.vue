@@ -25,13 +25,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed,onMounted } from 'vue';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 import SidebarItem from './SidebarItem.vue';
 import Logo from './Logo.vue';
 import variables from '@/styles/variables.module.scss';
 import useStore from '@/store';
+
 const { permission, setting, app } = useStore();
 const route = useRoute();
 const routes = computed(() => permission.routes);

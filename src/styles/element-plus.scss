@@ -5,8 +5,14 @@
   // element plus 2.1.0 禁用文本色值和正常文本色值无法区分问题
   --el-text-color-disabled: #ccc;
 }
+.el-card__header{
+  font-weight: 700;
+}
 .large_dialog{
   margin-top: 5vh !important;
+}
+.el-button.is-text:not(.is-disabled):hover{
+  background-color:var(--el-button-hover-bg-color) !important
 }
 .width_class{
   width: 95%;
@@ -49,7 +55,7 @@
   background-color: #e1f3d8b5 !important;
 }
 .el-input--default{
-  min-width: 214px;
+  min-width: 240px;
 }
 .el-select--default{
   width: 100%;

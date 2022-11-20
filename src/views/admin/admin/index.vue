@@ -111,7 +111,7 @@
     // 查询
     function handleQuery() {
         state.loading = true;
-        listUserPages(state.queryParams).then((res) => {
+        listUserPages(state.queryParams).then((res) => { 
           var data = res.data
           var listjson = JSON.parse(JSON.stringify(data.list.data) )
           state.permList = listjson;

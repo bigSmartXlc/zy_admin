@@ -37,10 +37,10 @@
           generateTitle(item.meta.title)
         }}</span>
       </template>
-      <span v-if="item.children.length>0">
+      <span v-if="item.children&&item.children.length>0">
         <sidebar-item
           v-for="child in item.children"
-          :key="child.id"
+          :key="child.name"
           :item="child"
           :is-nest="true"
           :base-path="resolvePath(child.path)"
@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref} from 'vue';
 import path from 'path-browserify';
 import { isExternal } from '@/utils/validate';
 import AppLink from './Link.vue';

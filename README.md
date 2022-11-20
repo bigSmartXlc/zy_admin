@@ -1,38 +1,4 @@
-<p align="center">
-    <img src="https://img.shields.io/badge/Vue-3.2.25-brightgreen.svg"/>
-    <img src="https://img.shields.io/badge/Vite-2.9.7-green.svg"/>
-    <img src="https://img.shields.io/badge/Element Plus-2.1.8-blue.svg"/>
-    <a src="https://github.com/hxrui" target="_blank">
-        <img src="https://img.shields.io/github/stars/youlaitech/youlai-mall.svg?style=social&label=Stars"/>
-    </a>
-    <a href="https://gitee.com/youlaitech/youlai-mall" target="_blank">
-        <img src="https://gitee.com/youlaiorg/vue3-element-admin/badge/star.svg"/>
-    </a> 
-    <br/>
-    <img src="https://img.shields.io/badge/license-MIT-green.svg"/>
-    <a href="https://gitee.com/youlaiorg" target="_blank">
-        <img src="https://img.shields.io/badge/Author-有来开源组织-orange.svg"/>
-    </a>
-</p>
-<p align="center">
-<a target="_blank" href="http://vue3.youlai.tech">在线预览</a> |  <a target="_blank" href="https://www.youlai.tech/pages/5d571c/">官方文档</a> 
-</p>
 
-## 项目介绍
-
-[vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) 是基于 [vue-element-admin](https://gitee.com/panjiachen/vue-element-admin) 升级的 Vue3 版本后台管理前端解决方案；使用前端主流技术栈 Vue3 + Vite2 + TypeScript + Vue Router + Pinia + Volar + Element Plus 等；实现功能包括不限于动态权限路由、按钮权限控制、国际化、主题大小切换等；基于此模板开发了有来商城管理系统，也是有来开源组织的另一项开源力作。
-
-## 项目优势
-
-- 基于 vue-element-admin 升级的 Vue3 版本 ，极易上手，减少学习成本；
-- 一套完整适配的微服务权限系统线上接口，企业级真实前后端接入场景，非 Mock 数据；
-- 功能全面：国际化、动态路由、按钮权限、主题大小切换、Echart、wangEditor；
-- TypeScript 全面支持，包括组件和 API 调用层面；
-- 主流 Vue3 生态和前端技术栈，常用组件极简封装；
-- 从 0 到 1 的项目文档支持；
-- 全栈技术支持: 微服务接口、Vue3 管理前端、uni-app 移动端和 K8S 持续集成交付；
-
-## 技术栈
 
 | 技术栈 | 描述 | 官网 |
 | --- | --- | --- |
@@ -42,21 +8,6 @@
 | Element Plus | 基于 Vue 3，面向设计师和开发者的组件库 | https://element-plus.gitee.io/zh-CN/ |
 | Pinia | 新一代状态管理工具 | https://pinia.vuejs.org/ |
 | Vue Router | Vue.js 的官方路由 | https://router.vuejs.org/zh/ |
-
-## 项目预览
-
-在线预览地址: [vue3.youlai.tech](http://vue3.youlai.tech)
-
-| ![控制台](https://s2.loli.net/2022/04/07/fIEDs3GeSb8rxlt.png) | ![国际化](https://s2.loli.net/2022/04/07/lt6u2jMefpTJvkh.gif) |
-| --- | --- |
-| ![菜单管理](https://s2.loli.net/2022/04/07/quTeB3pNIyQ4alG.png) | ![角色管理](https://s2.loli.net/2022/04/07/dmh5MYtuONGRJZn.png) |
-| ![商品管理](https://s2.loli.net/2022/04/07/5XgYfMqBxhtdcG2.png) | ![库存设置](https://s2.loli.net/2022/04/07/s9IJeP7vRxq2WSL.png) |
-
-## 项目地址
-
-|  | Gitee | Github |
-| --- | --- | --- |
-| vue3-element-admin | [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) |
 
 ## 启动部署
 
@@ -110,11 +61,4 @@
       }
   }
 
-  ```
 
-## 联系信息
-
-> 欢迎添加开发者微信，备注「有来」进群
-
-| ![郝先瑞](https://s2.loli.net/2022/04/06/yRx8uzj4emA5QVr.jpg) | ![张川](https://s2.loli.net/2022/04/06/cQihGv9uPsTjXk1.jpg) |
-| --- | --- |

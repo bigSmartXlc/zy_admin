@@ -41,19 +41,19 @@ service.interceptors.response.use(
     const codeList = [100002, 100003, 100004, 200008]
     if (code === 100000) {
       return response.data;
-    }else if (codeList.includes(code) && router.currentRoute.value.path != 'page/login') {
-      if (messageTimes === true) {
+    }else if (codeList.includes(code) ) {
+      if (messageTimes === true&& router.currentRoute.value.path != '/login') {
         messageTimes = false
-        // ElMessageBox.alert(response.data.message, 'token验证失败', {
-        // if you want to disable its autofocus
-        // autofocus: false,
+        // ElMessageBox.alert(response.data.message, message+code, {
         //   showClose: false,
         //   confirmButtonText: 'OK',
         //   callback: (action: Action) => {
-            user.resetToken();
-            router.push('/pages/login')
+        //     user.resetToken();
+        //     router.push('/login')
         //   },
         // })
+        user.resetToken();
+        router.push('/login')
       }
       setTimeout(() => {
         messageTimes = true

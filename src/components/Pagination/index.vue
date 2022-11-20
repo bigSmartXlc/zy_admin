@@ -47,7 +47,7 @@ const props = defineProps({
   },
   autoScroll: {
     type: Boolean,
-    default: true
+    default: false
   },
   hidden: {
     type: Boolean,

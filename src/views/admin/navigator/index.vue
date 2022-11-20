@@ -14,6 +14,7 @@
     :default-expanded-keys="defaultNodekey"
     draggable
     node-key="id"
+    default-expand-all
     @node-drag-end="handleDragEnd"
     accordion
     @node-click="handleNodeClick"
@@ -179,9 +180,10 @@ onMounted(()=>{
 const refersh=(first=false)=>{
   listMenuOptions().then(res=>{
     if(!first){
-      const { permission } = useStore();
-      permission.generateRoutes(['ROOT']).then(res=>{
-      })
+      location.reload()
+      // const { permission } = useStore();
+      // permission.generateRoutes(['ROOT']).then(res=>{
+      // })
     }
     menu_route.value = []
     tree_data.value = res.data.list.data
@@ -213,7 +215,7 @@ const getAfterNode = (data:any,node:any)=>{
     for(let i=0;i<data.length;i++){
     if(data[i].id == node.id){
       if(i < (data.length - 1)){
-         dragParams.footer_id = data[i-1].id
+         dragParams.footer_id = data[i+1].id
           break ;
       }else{//没有后面一个节点
         dragParams.footer_id = 0;
